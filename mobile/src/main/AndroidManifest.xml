@@ -18,6 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MobileListenerService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

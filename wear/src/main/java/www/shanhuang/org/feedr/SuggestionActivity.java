@@ -23,26 +23,32 @@ public class SuggestionActivity extends Activity {
         int img = 0;
         Log.e("ckpt", "checkpoint 1");
         Context c = getApplicationContext();
-        boolean b = c == null;
-        int i = R.mipmap.start;
-        Log.e("null context", i + "");
-        switch (currImage) {
-            case "start":
-                img = getDrawable(getApplicationContext(), "start");
-                break;
-            case "img_1":
-                img = getDrawable(getApplicationContext(), "img_1");
-                break;
-            case "img_2":
-                img = getDrawable(getApplicationContext(), "img_2");
-                break;
-            case "img_3":
-                img = getDrawable(getApplicationContext(), "img_3");
-                break;
-        }
+        img = getDrawable(getApplicationContext(), "start");
+//        switch (currImage) {
+//            case "start":
+//                img = getDrawable(getApplicationContext(), "start");
+//                break;
+//            case "img_1":
+//                img = getDrawable(getApplicationContext(), "img_1");
+//                break;
+//            case "img_2":
+//                img = getDrawable(getApplicationContext(), "img_2");
+//                break;
+//            case "img_3":
+//                img = getDrawable(getApplicationContext(), "img_3");
+//                break;
+//        }
+        ib.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View vew) {
+                getMap();
+                return true;
+            }
+        });
+        Log.e("imgage", img + "");
         Log.e("ckpt", "checkpoint 2");
 
-        ib.setBackgroundResource(img);
+//        ib.setBackgroundResource(img);
         setContentView(R.layout.activity_suggestion);
     }
 
@@ -82,6 +88,17 @@ public class SuggestionActivity extends Activity {
 
         return context.getResources().getIdentifier(name,
                 "drawable", context.getPackageName());
+    }
+
+    public void getMap() {
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        /** Use the location information to get current location, and restaurant location
+         *  and set those tto the GoogleMaps API to get directions to the restaurant
+         **/
+        // TODO: add data to mapIntent and take care of the map stuff in MapActivity
+
+        startActivity(mapIntent);
+
     }
 
 }
