@@ -1,0 +1,87 @@
+package www.shanhuang.org.feedr;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.app.Activity;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+
+import junit.framework.Assert;
+
+public class SuggestionActivity extends Activity {
+    String currImage;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent creatorIntent = getIntent();
+        currImage = creatorIntent.getStringExtra("image");
+
+        ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
+        int img = 0;
+        Log.e("ckpt", "checkpoint 1");
+        Context c = getApplicationContext();
+        boolean b = c == null;
+        int i = R.mipmap.start;
+        Log.e("null context", i + "");
+        switch (currImage) {
+            case "start":
+                img = getDrawable(getApplicationContext(), "start");
+                break;
+            case "img_1":
+                img = getDrawable(getApplicationContext(), "img_1");
+                break;
+            case "img_2":
+                img = getDrawable(getApplicationContext(), "img_2");
+                break;
+            case "img_3":
+                img = getDrawable(getApplicationContext(), "img_3");
+                break;
+        }
+        Log.e("ckpt", "checkpoint 2");
+
+        ib.setBackgroundResource(img);
+        setContentView(R.layout.activity_suggestion);
+    }
+
+
+    public void nextSuggestion(View view) {
+        // get next information from mobile, then use that to build the next suggestion
+
+        // TODO: get info from mobile then add to intent and start new activity
+
+        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
+
+        /** set the next imagebutton src **/
+        String next = "";
+        switch (currImage) {
+            case "start":
+                next = "img_1";
+                break;
+            case "img_1":
+                next = "img_2";
+                break;
+            case "img_2":
+                next = "img_3";
+                break;
+            case "img_3":
+                next = "start";
+                break;
+        }
+        suggestionIntent.putExtra("image", next);
+        startActivity(suggestionIntent);
+    }
+
+    public static int getDrawable(Context context, String name) {
+
+        // dynamically get image id
+        Assert.assertNotNull(context);
+        Assert.assertNotNull(name);
+
+        return context.getResources().getIdentifier(name,
+                "drawable", context.getPackageName());
+    }
+
+}
