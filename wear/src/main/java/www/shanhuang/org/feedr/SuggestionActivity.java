@@ -17,8 +17,12 @@ public class SuggestionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent creatorIntent = getIntent();
+        // just for prog03:
         currImage = creatorIntent.getStringExtra("image");
 
+        // for actual project; uncomment later
+        // data = creatorIntent.getStringExtra("data");
+        // String[] parsed = data.split("|");
         ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
         int img = 0;
         Log.e("ckpt", "checkpoint 1");
@@ -91,13 +95,10 @@ public class SuggestionActivity extends Activity {
     }
 
     public void getMap() {
-        Intent mapIntent = new Intent(this, MapActivity.class);
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
-        // TODO: add data to mapIntent and take care of the map stuff in MapActivity
-
-        startActivity(mapIntent);
+        // TODO: tell WatchListenerService to tell Mobile to get map info and then call MapActivity
 
     }
 

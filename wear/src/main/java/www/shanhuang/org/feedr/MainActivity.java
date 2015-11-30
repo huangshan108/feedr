@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     }
 
     public void startSuggestion() {
+
         Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
         suggestionIntent.putExtra("iamge", "start");
         startActivity(suggestionIntent);
