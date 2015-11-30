@@ -25,21 +25,21 @@ public class MainActivity extends Activity {
         Log.e("home button: ", hb + "");
 
         // click starts the suggestions
-        home_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSuggestion();
-            }
-        });
+//        home_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startSuggestion();
+//            }
+//        });
 
         // long click opens the preferences
-        home_button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View vew) {
-                startPreference();
-                return true;
-            }
-        });
+//        home_button.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View vew) {
+//                startPreference();
+//                return true;
+//            }
+//        });
     }
 
     public void startSuggestion() {
