@@ -31,7 +31,7 @@ public class Opentable {
             @Override
             public void run() {
                 try {
-                    final URL api = new URL(API_END_POINT + "?zip=" + zip);
+                    final URL api = new URL(API_END_POINT + "?zip=" + zip + "&per_page=100");
                     Log.i("API endpoint URL", api.toString());
                     HttpURLConnection connection = (HttpURLConnection) api.openConnection();
                     InputStream in = new BufferedInputStream(connection.getInputStream());
