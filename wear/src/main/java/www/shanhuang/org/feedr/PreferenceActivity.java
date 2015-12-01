@@ -24,7 +24,7 @@ public class PreferenceActivity extends Activity {
         // TODO: get info from mobile then add to intent and start new activity
 
         Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-        suggestionIntent.putExtra("image", "start");
+        suggestionIntent.putExtra("image", "img_1");
         startActivity(suggestionIntent);
     }
 
