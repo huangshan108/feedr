@@ -17,31 +17,30 @@ public class SuggestionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent creatorIntent = getIntent();
+        setContentView(R.layout.activity_suggestion);
+        /**
+           for actual project; uncomment later
+           data = creatorIntent.getStringExtra("data");
+           String[] parsed = data.split("|");
+        **/
         // just for prog03:
         currImage = creatorIntent.getStringExtra("image");
 
-        // for actual project; uncomment later
-        // data = creatorIntent.getStringExtra("data");
-        // String[] parsed = data.split("|");
         ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
-        int img = 0;
-        Log.e("ckpt", "checkpoint 1");
-        Context c = getApplicationContext();
-        img = getDrawable(getApplicationContext(), "start");
-//        switch (currImage) {
-//            case "start":
-//                img = getDrawable(getApplicationContext(), "start");
-//                break;
-//            case "img_1":
-//                img = getDrawable(getApplicationContext(), "img_1");
-//                break;
-//            case "img_2":
-//                img = getDrawable(getApplicationContext(), "img_2");
-//                break;
-//            case "img_3":
-//                img = getDrawable(getApplicationContext(), "img_3");
-//                break;
-//        }
+        boolean isnull = ib == null;
+        Log.d("image button is null", isnull + "");
+        // this is just for prog03
+        switch (currImage) {
+            case "img_1":
+                ib.setBackgroundResource(R.mipmap.restaurant1);
+                break;
+            case "img_2":
+                ib.setBackgroundResource(R.mipmap.restaurant2);
+                break;
+            case "img_3":
+                ib.setBackgroundResource(R.mipmap.restaurant3);
+                break;
+        }
         ib.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View vew) {
@@ -49,11 +48,8 @@ public class SuggestionActivity extends Activity {
                 return true;
             }
         });
-        Log.e("imgage", img + "");
-        Log.e("ckpt", "checkpoint 2");
 
-//        ib.setBackgroundResource(img);
-        setContentView(R.layout.activity_suggestion);
+        // ---------------------
     }
 
 
@@ -67,9 +63,6 @@ public class SuggestionActivity extends Activity {
         /** set the next imagebutton src **/
         String next = "";
         switch (currImage) {
-            case "start":
-                next = "img_1";
-                break;
             case "img_1":
                 next = "img_2";
                 break;
@@ -77,7 +70,7 @@ public class SuggestionActivity extends Activity {
                 next = "img_3";
                 break;
             case "img_3":
-                next = "start";
+                next = "img_1";
                 break;
         }
         suggestionIntent.putExtra("image", next);
@@ -99,7 +92,8 @@ public class SuggestionActivity extends Activity {
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
         // TODO: tell WatchListenerService to tell Mobile to get map info and then call MapActivity
-
+        Intent MapIntent = new Intent(this, MapActivity.class);
+        startActivity(MapIntent);
     }
 
 }

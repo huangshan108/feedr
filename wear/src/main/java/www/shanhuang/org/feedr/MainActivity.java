@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
     public void startSuggestion() {
 
         Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-        suggestionIntent.putExtra("iamge", "start");
+        suggestionIntent.putExtra("image", "img_1");
         startActivity(suggestionIntent);
     }
 
