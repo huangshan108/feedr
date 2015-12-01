@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Opentable.getRestaurants("94704");
     }
 
     @Override
