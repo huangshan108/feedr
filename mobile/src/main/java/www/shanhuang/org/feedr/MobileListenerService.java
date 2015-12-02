@@ -1,16 +1,17 @@
 package www.shanhuang.org.feedr;
 
-import android.app.Service;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -25,7 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 public class MobileListenerService extends WearableListenerService {
@@ -35,6 +35,8 @@ public class MobileListenerService extends WearableListenerService {
 
     private static String MEAL_PLAN = "/meal_plan";
     private static String MAP = "/map";
+    private final String PREFS_CHANGE = "/prefs_change";
+
     public MobileListenerService() {
     }
 
@@ -43,6 +45,9 @@ public class MobileListenerService extends WearableListenerService {
         if( messageEvent.getPath().equalsIgnoreCase(GET_SUGGESTION) ) {
             // TODO: get new suggestion from restaurant, then send the info back to the wear
             getSuggestions();
+        } else if (messageEvent.getPath().equalsIgnoreCase(PREFS_CHANGE)) {
+            // TODO: received preferences change from watch, save preferences to persist
+            savePreferences(messageEvent);
         } else {
             super.onMessageReceived( messageEvent );
         }
@@ -106,6 +111,24 @@ public class MobileListenerService extends WearableListenerService {
             Log.e("InterruptedException", "" + ie + "");
         }
 
+    }
+
+    /*
+     * Gets saved preferences and sends them to the watch.
+     */
+    protected void syncPreferences() {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+
+        PutDataMapRequest putRequest = PutDataMapRequest.create(PREFS_CHANGE);
+        DataMap map = putRequest.getDataMap();
+        map.putInt("cost", prefs.getInt("cost", 1));
+        map.putInt("distance", prefs.getInt("distance", 1));
+        Wearable.DataApi.putDataItem(mApiClient, putRequest.asPutDataRequest());
+    }
+
+    protected void savePreferences(MessageEvent messageEvent) {
+        // TODO: save new preferences received
     }
 
     protected void sendMessage(final String path, final String data) {
