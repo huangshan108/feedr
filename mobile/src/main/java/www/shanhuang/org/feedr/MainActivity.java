@@ -7,19 +7,21 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
-    private String latLong;
+    private String latLong, zip;
     private int WAIT_TIME = 5000;
 
     @Override
@@ -43,14 +45,21 @@ public class MainActivity extends AppCompatActivity {
          *  Then make the calls to get the location without causing an error.
          * **/
 
+        boolean gotData = false;
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // run after waiting  WAIT_TIME ms
                 latLong = locationService.getLocation();
+                double lat = new Double(latLong.split(":")[0]);
+                double lon = new Double(latLong.split(":")[1]);
+                zip = geocoder(lat, lon);
+
+                Log.e("zip", zip);
             }
         }, WAIT_TIME);
+
 
     }
 
@@ -95,5 +104,18 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    protected String geocoder(double lat, double lon) {
+        // convert the string from usgs to lat,long and use this info to inflate the map
+        List<Address> geocodeMatches = null;
+        try {
+            geocodeMatches = new Geocoder(this).getFromLocation(lat, lon, 1);
+        } catch (IOException e) {
+
+        }
+        if (geocodeMatches!=null) {
+            return geocodeMatches.get(0).getPostalCode();
+        }
+        return "";
+    }
 
 }
