@@ -39,7 +39,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("LocationService", "service started -- in onCreate");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -62,7 +61,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.e("connected", "connected");
         // Build a request for continual location updates
         LocationRequest locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -109,11 +107,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
 
-        Double lat = location.getLatitude();
-        Double lon = location.getLongitude();
-        String loc = lat + ":" + lon;
-        Log.e("location: ", loc);
-
     }
 
 
@@ -128,25 +121,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LocationService getService() {
             return LocationService.this;
         }
-
-        String getLocation() {
-            if (location != null) {
-                Double lat = location.getLatitude();
-                Double lon = location.getLongitude();
-                String loc = lat + ":" + lon;
-                return loc;
-            }
-            return "not ready";
-        }
     }
 
+    /** Returns a String in the format "ltatitude:longitude"
+     * **/
     String getLocation() {
-        if (location != null) {
-            Double lat = location.getLatitude();
-            Double lon = location.getLongitude();
-            String loc = lat + ":" + lon;
-            return loc;
-        }
-        return "not ready";
+
+        return location.getLatitude() + ":" + location.getLongitude();
+
     }
 }

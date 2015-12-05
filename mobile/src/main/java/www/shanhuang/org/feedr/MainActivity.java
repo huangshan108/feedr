@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent= new Intent(this, LocationService.class);
         bindService(intent, mConnection,
                 Context.BIND_AUTO_CREATE);
-        Log.e("race", "racing");
 
         /** Handler is to wait for LocationService to connect and get the location.
          *  Then make the calls to get the location without causing an error.
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // run after waiting  WAIT_TIME ms
                 latLong = locationService.getLocation();
-                Log.e("main loc", latLong);
             }
         }, WAIT_TIME);
 
@@ -90,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                                        IBinder binder) {
             LocationService.MyBinder b = (LocationService.MyBinder) binder;
             locationService = b.getService();
-            Log.e("race", "race on!");
         }
 
         public void onServiceDisconnected(ComponentName className) {
