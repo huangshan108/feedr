@@ -28,7 +28,7 @@ public class Restaurant {
             this.address = restaurantData.getString("address");
             this.city = restaurantData.getString("city");
             this.state = restaurantData.getString("state");
-            this.zip = restaurantData.getString("zip");
+            this.zip = restaurantData.getString("postal_code");
             this.phone = restaurantData.getString("phone");
             this.lat = restaurantData.getString("lat");
             this.lng = restaurantData.getString("lng");

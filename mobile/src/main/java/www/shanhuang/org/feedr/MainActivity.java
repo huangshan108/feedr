@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent= new Intent(this, LocationService.class);
         bindService(intent, mConnection,
                 Context.BIND_AUTO_CREATE);
-
         /** Handler is to wait for LocationService to connect and get the location.
          *  Then make the calls to get the location without causing an error.
          * **/
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
                 mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
                 startService(mobileListenerIntent);
-                Log.e("zip", zip);
             }
         }, WAIT_TIME);
     }

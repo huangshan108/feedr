@@ -30,7 +30,6 @@ public class MainActivity extends Activity {
         /** ImageButton listener setup **/
         ImageButton home_button = (ImageButton) findViewById(R.id.home_button);
         boolean hb = home_button == null;
-        Log.e("home button: ", hb + "");
 
         // click starts the suggestions
 //        home_button.setOnClickListener(new View.OnClickListener() {

@@ -11,7 +11,10 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -20,10 +23,10 @@ import java.util.List;
 
 public class WatchListenerService extends WearableListenerService {
 
-    private final String MEAL_PLAN = "/meal_plan";
-    private final String MAP = "/map";
-    private final String PREFERENCES = "/preferences";
+    private static String MEAL_PLAN = "/meal_plan";
+    private static String MAP = "/map";
     private final String PREFS_CHANGE = "/prefs_change";
+    private final String PREFERENCES = "/preferences";
 
     private GoogleApiClient mApiClient;
 
@@ -44,6 +47,7 @@ public class WatchListenerService extends WearableListenerService {
                     }
                 })
                 .build();
+        mApiClient.connect();
 
     }
 
@@ -52,11 +56,8 @@ public class WatchListenerService extends WearableListenerService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // get the intent, if the string extra says get suggestion, use sendMessage to go get message
+
         String note = intent.getStringExtra("note");
-        mApiClient.connect();
-        Log.e("api connected", mApiClient.isConnecting() + "");
-//        while (mApiClient.isConnecting()) {}
-        Log.e("api connected", mApiClient.isConnected() + "");
         if (note.equals("get_suggestion")) {
             WatchMessenger.sendMessage(mApiClient, MEAL_PLAN, "");
         }
@@ -69,10 +70,11 @@ public class WatchListenerService extends WearableListenerService {
         String new_data = new String(messageEvent.getData(), StandardCharsets.UTF_8);
         if( messageEvent.getPath().equalsIgnoreCase( MEAL_PLAN ) ) {
             // TODO: do something with the message we received from mobile
-            Log.e("data received", new_data);
+//            Log.e("data received", new_data);
             Intent SuggestionIntent = new Intent(this, SuggestionActivity.class);
-//            SuggestionIntent.putExtra("data", new_data);
-//            startActivity(SuggestionIntent);
+            SuggestionIntent.putExtra("data", new_data);
+            SuggestionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(SuggestionIntent);
 
         } else if (messageEvent.getPath().equalsIgnoreCase( MAP )){
             // TODO: do something with the message and start MapActivity
