@@ -1,5 +1,6 @@
 package www.shanhuang.org.feedr;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class MobileListenerService extends WearableListenerService {
     private static final String GET_SUGGESTION = "/get_suggestion";
@@ -36,15 +38,64 @@ public class MobileListenerService extends WearableListenerService {
     private static String MAP = "/map";
     private final String PREFS_CHANGE = "/prefs_change";
 
-    public MobileListenerService() {
+    private String zip, latLong;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //initialize the googleAPIClient for message passing
+        mApiClient = new GoogleApiClient.Builder( this )
+                .addApi( Wearable.API )
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .build();
+        mApiClient.connect();
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("start", "starting service");
+        String values = intent.getStringExtra("zip:latlong");
+        String[] parsed = values.split(":");
+        zip = parsed[0];
+        latLong = parsed[1] + ":" + parsed[2];
+        Log.e("ls zip", zip);
+        Log.e("ls latlong", latLong);
+
+//        /** Connect the API **/
+//        mApiClient = new GoogleApiClient.Builder( this )
+//                .addApi(Wearable.API)
+//                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+//                    @Override
+//                    public void onConnected(Bundle connectionHint) {
+//                        /* Successfully connected */
+//                    }
+//
+//                    @Override
+//                    public void onConnectionSuspended(int cause) {
+//                        /* Connection was interrupted */
+//                    }
+//                })
+//                .build();
+
+        sendMessage(MEAL_PLAN,Opentable.getRestaurants(zip));
+        return START_STICKY;
     }
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        if( messageEvent.getPath().equalsIgnoreCase(GET_SUGGESTION) ) {
+        Log.e("message received", "got it");
+        if( messageEvent.getPath().equalsIgnoreCase(MEAL_PLAN) ) {
             // TODO: get new suggestion from restaurant, then send the info back to the wear
 
-            String data = Opentable.getRestaurants("94704");
+            String data = Opentable.getRestaurants(zip);
+            sendMessage(MEAL_PLAN, data);
 
         } else if (messageEvent.getPath().equalsIgnoreCase(PREFS_CHANGE)) {
             // TODO: received preferences change from watch, save preferences to persist
@@ -74,25 +125,13 @@ public class MobileListenerService extends WearableListenerService {
     }
 
     protected void sendMessage(final String path, final String data) {
-        mApiClient = new GoogleApiClient.Builder( this )
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        /* Successfully connected */
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                        /* Connection was interrupted */
-                    }
-                })
-                .build();
         new Thread( new Runnable() {
             @Override
             public void run() {
-                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mApiClient ).await();
+                Log.e("connected nodes","waiting");
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mApiClient ).await(10, TimeUnit.SECONDS);
 
+                Log.e("connected nodes", nodes.getNodes().size() + "");
                 for(Node node : nodes.getNodes()) {
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                             mApiClient, node.getId(), path, data.getBytes() ).await();

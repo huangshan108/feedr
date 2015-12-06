@@ -2,6 +2,9 @@ package www.shanhuang.org.feedr;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -14,30 +17,23 @@ import com.google.android.gms.wearable.Wearable;
  */
 public class WatchMessenger {
 
-    public static void sendMessage(final Context context, final String path, final String data) {
-        final GoogleApiClient mApiClient = new GoogleApiClient.Builder( context )
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        /* Successfully connected */
-                    }
+    public static void sendMessage(final GoogleApiClient mApiClient, final String path, final String data) {
 
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                        /* Connection was interrupted */
-                    }
-                })
-                .build();
-        new Thread( new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mApiClient ).await();
-
-                for(Node node : nodes.getNodes()) {
-                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
-                            mApiClient, node.getId(), path, data.getBytes() ).await();
-                }
+                Log.e("starting message", "starting msg");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
+                        Log.e("connected nodes", nodes.getNodes().size() + "");
+                        for (Node node : nodes.getNodes()) {
+                            MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                                    mApiClient, node.getId(), path, data.getBytes()).await();
+                        }
+                    }
+                }).start();
             }
         }).start();
     }

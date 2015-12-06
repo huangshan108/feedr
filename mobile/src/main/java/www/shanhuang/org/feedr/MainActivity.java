@@ -22,7 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private String latLong, zip;
-    private int WAIT_TIME = 5000;
+    private int WAIT_TIME = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
         /** Handler is to wait for LocationService to connect and get the location.
          *  Then make the calls to get the location without causing an error.
          * **/
-
-        boolean gotData = false;
+        Log.e("bound", "service bound");
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -55,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 double lat = new Double(latLong.split(":")[0]);
                 double lon = new Double(latLong.split(":")[1]);
                 zip = geocoder(lat, lon);
-
+                Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
+                mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
+                startService(mobileListenerIntent);
                 Log.e("zip", zip);
             }
         }, WAIT_TIME);
-
-
     }
 
     @Override
