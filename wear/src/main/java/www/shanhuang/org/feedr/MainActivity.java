@@ -47,6 +47,10 @@ public class MainActivity extends Activity {
 //                return true;
 //            }
 //        });
+
+        Intent MapIntent = new Intent(this, MapsActivity.class);
+        startActivity(MapIntent);
+
         startSuggestion();
     }
 
