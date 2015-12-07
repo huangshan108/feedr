@@ -70,9 +70,9 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         });
 
         // Obtain the DismissOverlayView and display the introductory help text.
-//        mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
-//        mDismissOverlay.setIntroText(R.string.intro_text);
-//        mDismissOverlay.showIntroIfNecessary();
+        mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
+        mDismissOverlay.setIntroText(R.string.intro_text);
+        mDismissOverlay.showIntroIfNecessary();
 
         // Obtain the MapFragment and set the async listener to be notified when the map is ready.
         MapFragment mapFragment =
