@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 
 public class PreferenceActivity extends Activity {
 
@@ -26,6 +27,38 @@ public class PreferenceActivity extends Activity {
         Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
         suggestionIntent.putExtra("image", "img_1");
         startActivity(suggestionIntent);
+    }
+
+    public void onPreferencesButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.dist_radioButton1:
+                if (checked)
+                    break;
+            case R.id.dist_radioButton2:
+                if (checked)
+                    break;
+            case R.id.dist_radioButton3:
+                if (checked)
+                    break;
+            case R.id.dist_radioButton4:
+                if (checked)
+                    break;
+            case R.id.cost_radioButton1:
+                if (checked)
+                    break;
+            case R.id.cost_radioButton2:
+                if (checked)
+                    break;
+            case R.id.cost_radioButton3:
+                if (checked)
+                    break;
+            case R.id.cost_radioButton4:
+                if (checked)
+                    break;
+        }
     }
 
 }

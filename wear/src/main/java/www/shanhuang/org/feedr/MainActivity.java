@@ -23,6 +23,9 @@ public class MainActivity extends Activity {
         ImageButton home_button = (ImageButton) findViewById(R.id.home_button);
         boolean hb = home_button == null;
         Log.e("home button: ", hb + "");
+        ImageButton settings_button = (ImageButton) findViewById(R.id.settings_button);
+        boolean sb = home_button == null;
+        Log.e("settings button: ", sb + "");
 
         // click starts the suggestions
         home_button.setOnClickListener(new View.OnClickListener() {
@@ -31,13 +34,10 @@ public class MainActivity extends Activity {
                 startSuggestion();
             }
         });
-
-//         long click opens the preferences
-        home_button.setOnLongClickListener(new View.OnLongClickListener() {
+        settings_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View vew) {
+            public void onClick(View view) {
                 startPreference();
-                return true;
             }
         });
     }
