@@ -32,7 +32,7 @@ public class Opentable {
             public void run() {
                 try {
                     final URL api = new URL(API_END_POINT + "?zip=" + zip + "&per_page=100");
-                    Log.i("API endpoint URL", api.toString());
+//                    Log.i("API endpoint URL", api.toString());
                     HttpURLConnection connection = (HttpURLConnection) api.openConnection();
                     InputStream in = new BufferedInputStream(connection.getInputStream());
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -50,7 +50,7 @@ public class Opentable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("Restaurant Data", res.toString());
+//        Log.i("Restaurant Data", res.toString());
         return res.toString();
     }
 }

@@ -1,6 +1,7 @@
 package www.shanhuang.org.feedr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
@@ -10,9 +11,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
+
 public class MainActivity extends Activity {
 
     private TextView mTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +52,20 @@ public class MainActivity extends Activity {
 
     public void startSuggestion() {
 
-        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-        suggestionIntent.putExtra("image", "img_1");
-        startActivity(suggestionIntent);
+//        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
+//        suggestionIntent.putExtra("image", "img_1");
+//        startActivity(suggestionIntent);
+        Intent WLS_intent = new Intent(this, WatchListenerService.class);
+        WLS_intent.putExtra("note", "get_suggestion");
+        startService(WLS_intent);
+
     }
 
     public void startPreference() {
         Intent preferenceIntent = new Intent(this, PreferenceActivity.class);
         startActivity(preferenceIntent);
     }
+
+
 
 }
