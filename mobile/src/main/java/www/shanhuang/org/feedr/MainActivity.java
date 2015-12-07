@@ -56,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // run after waiting  WAIT_TIME ms
-                latLong = locationService.getLocation();
-                double lat = new Double(latLong.split(":")[0]);
-                double lon = new Double(latLong.split(":")[1]);
-                zip = geocoder(lat, lon);
-                Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
-                mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
-                startService(mobileListenerIntent);
+//                latLong = locationService.getLocation();
+//                double lat = new Double(latLong.split(":")[0]);
+//                double lon = new Double(latLong.split(":")[1]);
+//                zip = geocoder(lat, lon);
+//                Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
+//                mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
+//                startService(mobileListenerIntent);
             }
         }, WAIT_TIME);
     }
