@@ -1,7 +1,5 @@
 package www.shanhuang.org.feedr;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -12,18 +10,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.wearable.Wearable;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
@@ -214,7 +207,7 @@ public class MapsActivity extends Activity implements
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng((CURRENT_LAT + TARGET_LAT) / 2, (CURRENT_LOG + TARGET_LOG) / 2));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
         mMap.moveCamera(center);
         mMap.animateCamera(zoom);
     }
