@@ -2,7 +2,10 @@ package www.shanhuang.org.feedr;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,9 +33,14 @@ import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class MapsActivity extends Activity implements OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener {
+public class MapsActivity extends Activity implements
+        OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     /**
      * Overlay that shows a short help text when first launched. It also provides an option to
@@ -53,8 +61,18 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
     double CURRENT_LAT = 37.8687;
     double CURRENT_LOG = -122.259;
 
+    GoogleApiClient googleApiClient;
+
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .build();
+        }
+        googleApiClient.connect();
 
         /**
          * Get current location
@@ -187,8 +205,49 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         super.onStart();
     }
 
+
     @Override
-    public void onStop() {
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    // Create a Location Request and register as a listener when connected
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+        // Create the LocationRequest object
+        LocationRequest locationRequest = LocationRequest.create();
+        // Use high accuracy
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        // Set the update interval to 2 seconds
+        locationRequest.setInterval(TimeUnit.SECONDS.toMillis(2));
+        // Set the fastest update interval to 2 seconds
+        locationRequest.setFastestInterval(TimeUnit.SECONDS.toMillis(2));
+        // Set the minimum displacement
+        locationRequest.setSmallestDisplacement(2);
+
+        // Register listener using the LocationRequest object
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, (LocationListener) this);
+    }
+
+    // Disconnect from Google Play Services when the Activity stops
+    @Override
+    protected void onStop() {
+
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, (LocationListener) this);
+            googleApiClient.disconnect();
+        }
         super.onStop();
+    }
+
+    public void onConnectionFailed(ConnectionResult connectionResult) { }
+
+    public void onLocationChanged(Location location){
+
+        CURRENT_LAT = location.getLatitude();
+        CURRENT_LOG = location.getLongitude();
+        Log.i("LAT", Double.toString(CURRENT_LAT));
+        Log.i("LOG", Double.toString(CURRENT_LOG));
     }
 }
