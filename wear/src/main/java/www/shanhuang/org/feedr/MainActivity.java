@@ -30,28 +30,28 @@ public class MainActivity extends Activity {
         /** ImageButton listener setup **/
         ImageButton home_button = (ImageButton) findViewById(R.id.home_button);
         boolean hb = home_button == null;
+        Log.e("home button: ", hb + "");
+        ImageButton settings_button = (ImageButton) findViewById(R.id.settings_button);
+        boolean sb = home_button == null;
+        Log.e("settings button: ", sb + "");
 
         // click starts the suggestions
-//        home_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startSuggestion();
-//            }
-//        });
-
-//         long click opens the preferences
-//        home_button.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View vew) {
-//                startPreference();
-//                return true;
-//            }
-//        });
-
+        home_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSuggestion();
+            }
+        });
+        settings_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPreference();
+            }
+        });
         Intent MapIntent = new Intent(this, MapsActivity.class);
         startActivity(MapIntent);
-
         startSuggestion();
+
     }
 
     public void startSuggestion() {
