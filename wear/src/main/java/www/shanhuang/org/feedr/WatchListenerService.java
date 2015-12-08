@@ -57,10 +57,10 @@ public class WatchListenerService extends WearableListenerService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // get the intent, if the string extra says get suggestion, use sendMessage to go get message
 
-        String note = intent.getStringExtra("note");
-        if (note.equals("get_suggestion")) {
-            WatchMessenger.sendMessage(mApiClient, MEAL_PLAN, "");
-        }
+//        String note = intent.getStringExtra("note");
+//        if (note.equals("get_suggestion")) {
+//            WatchMessenger.sendMessage(mApiClient, MEAL_PLAN, "");
+//        }
         return START_STICKY;
     }
 
@@ -78,7 +78,7 @@ public class WatchListenerService extends WearableListenerService {
 
         } else if (messageEvent.getPath().equalsIgnoreCase( MAP )){
             // TODO: do something with the message and start MapActivity
-            Intent MapIntent = new Intent(this, MapActivity.class);
+            Intent MapIntent = new Intent(this, MapsActivity.class);
             MapIntent.putExtra("map", new_data);
             startActivity(MapIntent);
 

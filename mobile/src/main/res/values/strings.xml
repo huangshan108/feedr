@@ -2,4 +2,5 @@
     <string name="app_name">Feedr</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

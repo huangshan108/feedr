@@ -16,6 +16,10 @@ import android.view.MenuItem;
 import android.location.Address;
 import android.location.Geocoder;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.wearable.Wearable;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent MapIntent = new Intent(this, MapsActivity.class);
+        startActivity(MapIntent);
 
 //        Opentable.getRestaurants("94704");
     }
@@ -49,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // run after waiting  WAIT_TIME ms
-                latLong = locationService.getLocation();
-                double lat = new Double(latLong.split(":")[0]);
-                double lon = new Double(latLong.split(":")[1]);
-                zip = geocoder(lat, lon);
-                Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
-                mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
-                startService(mobileListenerIntent);
+//                latLong = locationService.getLocation();
+//                double lat = new Double(latLong.split(":")[0]);
+//                double lon = new Double(latLong.split(":")[1]);
+//                zip = geocoder(lat, lon);
+//                Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
+//                mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
+//                startService(mobileListenerIntent);
             }
         }, WAIT_TIME);
     }

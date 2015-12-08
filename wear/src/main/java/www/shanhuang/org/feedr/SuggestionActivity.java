@@ -148,7 +148,7 @@ public class SuggestionActivity extends Activity {
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
         // TODO: tell WatchListenerService to tell Mobile to get map info and then call MapActivity
-        Intent MapIntent = new Intent(this, MapActivity.class);
+        Intent MapIntent = new Intent(this, MapsActivity.class);
         startActivity(MapIntent);
     }
 

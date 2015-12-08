@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/feedr.iml" filepath="$PROJECT_DIR$/feedr.iml" />
-=======
-      <module fileurl="file://$PROJECT_DIR$/Feedr.iml" filepath="$PROJECT_DIR$/Feedr.iml" />
->>>>>>> cd1ec0fe5fdf4e4258b63b48f98d7df727374e06
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
     </modules>
