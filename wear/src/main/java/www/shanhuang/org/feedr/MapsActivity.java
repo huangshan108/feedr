@@ -61,6 +61,7 @@ public class MapsActivity extends Activity implements
     double CURRENT_LAT = 37.8687;
     double CURRENT_LOG = -122.259;
 
+    String encoding;
     GoogleApiClient googleApiClient;
 
     public void onCreate(Bundle savedState) {
@@ -77,10 +78,12 @@ public class MapsActivity extends Activity implements
         /**
          * Get current location
          */
-//        Intent creatorIntent = getIntent();
+        Intent creatorIntent = getIntent();
 //        CURRENT_LAT = Double.parseDouble(creatorIntent.getStringExtra("lat"));
 //        CURRENT_LOG = Double.parseDouble(creatorIntent.getStringExtra("lon"));
 
+        encoding = creatorIntent.getStringExtra("encoding");
+        Log.e("encoding", encoding);
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
 
@@ -138,9 +141,9 @@ public class MapsActivity extends Activity implements
         setUpMap();
 
         // encodedString should be received here.
-        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
-        Log.i("LIST", encodedString);
-        List<LatLng> list = decodePoly(encodedString);
+//        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
+//        Log.i("LIST", encodedString);
+        List<LatLng> list = decodePoly(encoding);
 
         PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#00B3Fd")).geodesic(true);
         for (int z = 0; z < list.size() - 1; z++) {

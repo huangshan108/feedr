@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
@@ -83,7 +84,7 @@ public class SuggestionActivity extends Activity {
             restsArr = restsObj.getJSONArray("restaurants");
             for (int i = 0; i < restsArr.length(); i++) {
                 JSONObject obj = (JSONObject) restsArr.get(i);
-                Log.d("zip is", obj.getString("postal_code"));
+//                Log.d("zip is", obj.getString("postal_code"));
                 Restaurant r = new Restaurant((JSONObject) restsArr.get(i));
                 restaurants.add(r);
             }
@@ -100,13 +101,13 @@ public class SuggestionActivity extends Activity {
         Iterator<Restaurant> it = restaurants.iterator();
         while (it.hasNext()){
             Restaurant r = it.next();
-            Log.d("restaurant name", r.getName() + " ");
-            Log.d("restaurant zip", r.getZip() + " ");
+//            Log.d("restaurant name", r.getName() + " ");
+//            Log.d("restaurant zip", r.getZip() + " ");
             getDistance(r);
         }
 
-
-
+        Restaurant r = restaurants.get(0);
+        getMap(new Double(r.getLat()), new Double(r.getLng()));
 
         // ---------------------
     }
@@ -146,15 +147,33 @@ public class SuggestionActivity extends Activity {
                 "drawable", context.getPackageName());
     }
 
-    public void getMap() {
+    public void getMap(double restaurantLat, double restaurantLng) {
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
         // TODO: tell WatchListenerService to tell Mobile to get map info and then call MapActivity
-        Intent mapIntent = new Intent(this, MapsActivity.class);
-        mapIntent.putExtra("lat", currLat);
-        mapIntent.putExtra("lon", currLon);
-        startActivity(mapIntent);
+//        Intent mapIntent = new Intent(this, MapsActivity.class);
+//        mapIntent.putExtra("lat", currLat);
+//        mapIntent.putExtra("lon", currLon);
+//        startActivity(mapIntent);
+
+        // connect the ApiClient, and send message
+        GoogleApiClient mApiClient = new GoogleApiClient.Builder( this )
+                .addApi( Wearable.API )
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .build();
+        mApiClient.connect();
+
+        // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
+        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng );
     }
 
     public double getDistance(Restaurant targetRestaurant) {
@@ -169,7 +188,7 @@ public class SuggestionActivity extends Activity {
         destination.setLatitude(new Double(targetRestaurant.getLat()));
         destination.setLongitude(new Double(targetRestaurant.getLng()));
         output = start.distanceTo(destination);
-        Log.e("distance", output + "m");
+//        Log.e("distance", output + "m");
         return output;
 
     }
