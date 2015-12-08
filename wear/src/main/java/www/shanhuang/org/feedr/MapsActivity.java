@@ -55,11 +55,11 @@ public class MapsActivity extends Activity implements
      */
     private GoogleMap mMap;
 
-    double TARGET_LAT = 37.865041;
-    double TARGET_LOG = -122.264094;
+    double TARGET_LAT;
+    double TARGET_LOG ;
 
-    double CURRENT_LAT = 37.8687;
-    double CURRENT_LOG = -122.259;
+    double CURRENT_LAT;
+    double CURRENT_LOG;
 
     String encoding;
     GoogleApiClient googleApiClient;
@@ -82,8 +82,24 @@ public class MapsActivity extends Activity implements
 //        CURRENT_LAT = Double.parseDouble(creatorIntent.getStringExtra("lat"));
 //        CURRENT_LOG = Double.parseDouble(creatorIntent.getStringExtra("lon"));
 
-        encoding = creatorIntent.getStringExtra("encoding");
+        String data = creatorIntent.getStringExtra("data");
+        Log.e("data received", data);
+        String[] parsed = data.split("_splitmeherepleasenow_");// the encoding can actually be one of my other splitters so im using this as the splitting point
+        encoding = parsed[0];
+        String[] points = parsed[1].split("_");
+
+        CURRENT_LAT = new Double(points[0].split(":")[0]);
+        CURRENT_LOG = new Double(points[0].split(":")[1]);
+        TARGET_LAT = new Double(points[1].split(":")[0]);
+        TARGET_LOG = new Double(points[1].split(":")[1]);
+
+
         Log.e("encoding", encoding);
+        Log.e("curr_lat", CURRENT_LAT + "");
+        Log.e("curr_log", CURRENT_LOG + "");
+        Log.e("tar_lat", TARGET_LAT + "");
+        Log.e("tar_log", TARGET_LOG + "");
+
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
 

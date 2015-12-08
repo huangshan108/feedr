@@ -48,16 +48,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double CURRENT_LAT ;
     double CURRENT_LOG ;
 
+    String location_data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
         Intent creatorIntent = getIntent();
-        String data = creatorIntent.getStringExtra("locations");
-        Log.e("data", data + " ");
+        location_data = creatorIntent.getStringExtra("locations");
+        Log.e("data", location_data + " ");
         // data is in the format currLat:currLong::restaurantLat:restaurantLong
-        String[] parsed = data.split("_");
+        String[] parsed = location_data.split("_");
         Log.e("curr", parsed[0]);
         Log.e("rest", parsed[1]);
 
@@ -238,6 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Intent mobileListenerService = new Intent(this, MobileListenerService.class);
             mobileListenerService.putExtra("command", "map");
             mobileListenerService.putExtra("encoding", encodedString);
+            mobileListenerService.putExtra("location_data", location_data);
             startService(mobileListenerService);
 
 

@@ -177,8 +177,8 @@ public class SuggestionActivity extends Activity {
     }
 
     public double getDistance(Restaurant targetRestaurant) {
-        Log.e("location", "current location: "+ currLat + ":" + currLon);
-        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
+//        Log.e("location", "current location: "+ currLat + ":" + currLon);
+//        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
 
         double output = 0;
         Location start = new Location("start");
