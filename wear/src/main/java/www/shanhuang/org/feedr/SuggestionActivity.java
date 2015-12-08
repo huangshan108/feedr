@@ -2,6 +2,7 @@ package www.shanhuang.org.feedr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -99,7 +100,9 @@ public class SuggestionActivity extends Activity {
         Iterator<Restaurant> it = restaurants.iterator();
         while (it.hasNext()){
             Restaurant r = it.next();
+            Log.d("restaurant name", r.getName() + " ");
             Log.d("restaurant zip", r.getZip() + " ");
+            getDistance(r);
         }
 
 
@@ -154,4 +157,20 @@ public class SuggestionActivity extends Activity {
         startActivity(mapIntent);
     }
 
+    public double getDistance(Restaurant targetRestaurant) {
+        Log.e("location", "current location: "+ currLat + ":" + currLon);
+        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
+
+        double output = 0;
+        Location start = new Location("start");
+        start.setLatitude(currLat);
+        start.setLongitude(currLon);
+        Location destination = new Location("restaurant");
+        destination.setLatitude(new Double(targetRestaurant.getLat()));
+        destination.setLongitude(new Double(targetRestaurant.getLng()));
+        output = start.distanceTo(destination);
+        Log.e("distance", output + "m");
+        return output;
+
+    }
 }

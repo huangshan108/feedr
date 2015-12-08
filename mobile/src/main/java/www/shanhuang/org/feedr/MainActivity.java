@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent MapIntent = new Intent(this, MapsActivity.class);
-        startActivity(MapIntent);
+//        Intent MapIntent = new Intent(this, MapsActivity.class);
+//        startActivity(MapIntent);
 
 //        Opentable.getRestaurants("94704");
     }
