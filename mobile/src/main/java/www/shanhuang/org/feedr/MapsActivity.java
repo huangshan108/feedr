@@ -218,6 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             JSONObject overviewPolylines = routes
                     .getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
+//            String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
+            Log.i("LIST", encodedString);
             List<LatLng> list = decodePoly(encodedString);
 
             PolylineOptions options = new PolylineOptions().width(15).color(Color.parseColor("#00B3Fd")).geodesic(true);
