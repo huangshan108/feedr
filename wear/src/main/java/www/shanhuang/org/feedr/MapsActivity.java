@@ -3,6 +3,8 @@ package www.shanhuang.org.feedr;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -10,15 +12,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.wearable.Wearable;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.wearable.view.DismissOverlayView;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.FrameLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends Activity implements OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener {
@@ -36,8 +46,30 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
      */
     private GoogleMap mMap;
 
+    double TARGET_LAT = 37.865041;
+    double TARGET_LOG = -122.264094;
+
+    double CURRENT_LAT = 37.8687;
+    double CURRENT_LOG = -122.259;
+
+    private GoogleApiClient mApiClient;
+
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+
+        mApiClient = new GoogleApiClient.Builder( this )
+                .addApi( Wearable.API )
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .build();
+        mApiClient.connect();
 
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
@@ -89,11 +121,64 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         mMap.setOnMapLongClickListener(this);
 
         // Add a marker in Sydney, Australia and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
+        mMap.addMarker(new MarkerOptions().position(target).title("Target"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mApiClient);
+        if (mLastLocation != null) {
+            CURRENT_LAT = mLastLocation.getLatitude();
+            CURRENT_LOG = mLastLocation.getLongitude();
+        }
 
         setUpMap();
+
+        // encodedString should be received here.
+        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
+        Log.i("LIST", encodedString);
+        List<LatLng> list = decodePoly(encodedString);
+
+        PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#00B3Fd")).geodesic(true);
+        for (int z = 0; z < list.size() - 1; z++) {
+            LatLng point = list.get(z);
+            options.add(point);
+        }
+        mMap.addPolyline(options);
+    }
+
+    private List<LatLng> decodePoly(String encoded) {
+
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+
+        return poly;
     }
 
     @Override
@@ -106,6 +191,10 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng((CURRENT_LAT + TARGET_LAT) / 2, (CURRENT_LOG + TARGET_LOG) / 2));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        mMap.moveCamera(center);
+        mMap.animateCamera(zoom);
     }
 
     @Override
