@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -52,24 +53,15 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
     double CURRENT_LAT = 37.8687;
     double CURRENT_LOG = -122.259;
 
-    private GoogleApiClient mApiClient;
-
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        mApiClient = new GoogleApiClient.Builder( this )
-                .addApi( Wearable.API )
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                    }
-                })
-                .build();
-        mApiClient.connect();
+        /**
+         * Get current location
+         */
+//        Intent creatorIntent = getIntent();
+//        CURRENT_LAT = Double.parseDouble(creatorIntent.getStringExtra("lat"));
+//        CURRENT_LOG = Double.parseDouble(creatorIntent.getStringExtra("lon"));
 
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
@@ -124,13 +116,6 @@ public class MapsActivity extends Activity implements OnMapReadyCallback,
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
         mMap.addMarker(new MarkerOptions().position(target).title("Target"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mApiClient);
-        if (mLastLocation != null) {
-            CURRENT_LAT = mLastLocation.getLatitude();
-            CURRENT_LOG = mLastLocation.getLongitude();
-        }
 
         setUpMap();
 

@@ -48,8 +48,8 @@ public class MainActivity extends Activity {
                 startPreference();
             }
         });
-        Intent MapIntent = new Intent(this, MapsActivity.class);
-        startActivity(MapIntent);
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        startActivity(mapIntent);
         startSuggestion();
 
     }
