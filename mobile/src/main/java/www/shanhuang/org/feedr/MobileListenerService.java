@@ -71,7 +71,8 @@ public class MobileListenerService extends WearableListenerService {
             sendMessage(MEAL_PLAN,values + "||" + Opentable.getRestaurants(zip));
         } else if (command.equalsIgnoreCase("map")) {
             String encoding = intent.getStringExtra("encoding");
-            sendMessage(MAP, encoding);
+            String location_data = intent.getStringExtra("location_data");
+            sendMessage(MAP, encoding+"_splitmeherepleasenow_"+location_data);
         }
         return START_STICKY;
     }

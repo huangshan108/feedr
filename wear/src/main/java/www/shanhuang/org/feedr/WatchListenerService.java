@@ -79,7 +79,7 @@ public class WatchListenerService extends WearableListenerService {
         } else if (messageEvent.getPath().equalsIgnoreCase( MAP )){
             // TODO: do something with the message and start MapActivity
             Intent mapIntent = new Intent(this, MapsActivity.class);
-            mapIntent.putExtra("encoding", new_data);
+            mapIntent.putExtra("data", new_data);
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(mapIntent);
 

@@ -24,9 +24,9 @@ public class PreferenceActivity extends Activity {
         // get next information from mobile, then use that to build the next suggestion
         // TODO: get info from mobile then add to intent and start new activity
 
-        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-        suggestionIntent.putExtra("image", "img_1");
-        startActivity(suggestionIntent);
+        Intent WLS_intent = new Intent(this, WatchListenerService.class);
+        WLS_intent.putExtra("note", "get_suggestion");
+        startService(WLS_intent);
     }
 
     public void onPreferencesButtonClicked(View view) {

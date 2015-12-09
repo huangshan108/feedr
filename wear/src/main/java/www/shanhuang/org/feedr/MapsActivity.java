@@ -1,7 +1,5 @@
 package www.shanhuang.org.feedr;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -12,18 +10,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.wearable.Wearable;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
@@ -55,13 +49,14 @@ public class MapsActivity extends Activity implements
      */
     private GoogleMap mMap;
 
-    double TARGET_LAT = 37.865041;
-    double TARGET_LOG = -122.264094;
+    double TARGET_LAT;
+    double TARGET_LOG;
 
-    double CURRENT_LAT = 37.8687;
-    double CURRENT_LOG = -122.259;
+    double CURRENT_LAT;
+    double CURRENT_LOG;
 
     String encoding;
+    String restaurantName;
     GoogleApiClient googleApiClient;
 
     public void onCreate(Bundle savedState) {
@@ -82,8 +77,26 @@ public class MapsActivity extends Activity implements
 //        CURRENT_LAT = Double.parseDouble(creatorIntent.getStringExtra("lat"));
 //        CURRENT_LOG = Double.parseDouble(creatorIntent.getStringExtra("lon"));
 
-        encoding = creatorIntent.getStringExtra("encoding");
+        String data = creatorIntent.getStringExtra("data");
+        Log.e("data received", data);
+        String[] parsed = data.split("_splitmeherepleasenow_");// the encoding can actually be one of my other splitters so im using this as the splitting point
+        encoding = parsed[0];
+        String[] points = parsed[1].split("_");
+
+        CURRENT_LAT = new Double(points[0].split(":")[0]);
+        CURRENT_LOG = new Double(points[0].split(":")[1]);
+        TARGET_LAT = new Double(points[1].split(":")[0]);
+        TARGET_LOG = new Double(points[1].split(":")[1]);
+        restaurantName = points[1].split(":")[2];
+
+
         Log.e("encoding", encoding);
+        Log.e("curr_lat", CURRENT_LAT + "");
+        Log.e("curr_log", CURRENT_LOG + "");
+        Log.e("tar_lat", TARGET_LAT + "");
+        Log.e("tar_log", TARGET_LOG + "");
+        Log.i("restaurantName", restaurantName);
+
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
 
@@ -135,14 +148,9 @@ public class MapsActivity extends Activity implements
 
         // Add a marker in Sydney, Australia and move the camera.
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
-        mMap.addMarker(new MarkerOptions().position(target).title("Target"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        mMap.addMarker(new MarkerOptions().position(target).title(restaurantName));
         setUpMap();
 
-        // encodedString should be received here.
-//        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
-//        Log.i("LIST", encodedString);
         List<LatLng> list = decodePoly(encoding);
 
         PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#00B3Fd")).geodesic(true);
@@ -198,9 +206,10 @@ public class MapsActivity extends Activity implements
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng((CURRENT_LAT + TARGET_LAT) / 2, (CURRENT_LOG + TARGET_LOG) / 2));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
         mMap.moveCamera(center);
         mMap.animateCamera(zoom);
+        Log.i("setUpMap", "FLAG");
     }
 
     @Override

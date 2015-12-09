@@ -96,53 +96,55 @@ public class SuggestionActivity extends Activity {
 //                return true;
 //            }
 //        });
-//    }
 
-//        String data = creatorIntent.getStringExtra("data");
-//        int index =  data.indexOf("||");
-//        String json = data.substring(index + 2);
-//        String location = data.substring(0,index);
-//        String[] parsed = location.split(":");
-//        zip = parsed[0];
-//        currLat = new Double(parsed[1]);
-//        currLon = new Double(parsed[2]);
-//
-//        Log.e("json", json);
-//        JSONObject restsObj = new JSONObject();
-//        JSONArray restsArr = new JSONArray();
-//        ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
-//        try {
-//            restsObj = new JSONObject(json);
-//            restsArr = restsObj.getJSONArray("restaurants");
-//            for (int i = 0; i < restsArr.length(); i++) {
-//                JSONObject obj = (JSONObject) restsArr.get(i);
-////                Log.d("zip is", obj.getString("postal_code"));
-//                Restaurant r = new Restaurant((JSONObject) restsArr.get(i));
-//                restaurants.add(r);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Collections.shuffle(restaurants);
-////        Restaurant rest = it.next();
-////        double lat = new Double(rest.getLat());
-////        double lon = new Double(rest.getLng());
-//
-//        Log.e("rest coord", restaurants.size() + "");
-//        Iterator<Restaurant> it = restaurants.iterator();
-//        while (it.hasNext()){
-//            Restaurant r = it.next();
-////            Log.d("restaurant name", r.getName() + " ");
-////            Log.d("restaurant zip", r.getZip() + " ");
-//            getDistance(r);
-//        }
-//
-//        Restaurant r = restaurants.get(0);
-//        getMap(new Double(r.getLat()), new Double(r.getLng()));
-//
-//        // ---------------------
-//    }
+
+        String data = creatorIntent.getStringExtra("data");
+        int index =  data.indexOf("||");
+        String json = data.substring(index + 2);
+        String location = data.substring(0,index);
+        String[] parsed = location.split(":");
+        zip = parsed[0];
+        currLat = new Double(parsed[1]);
+        currLon = new Double(parsed[2]);
+
+        Log.e("json", json);
+        JSONObject restsObj = new JSONObject();
+        JSONArray restsArr = new JSONArray();
+        ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+        try {
+            restsObj = new JSONObject(json);
+            restsArr = restsObj.getJSONArray("restaurants");
+            for (int i = 0; i < restsArr.length(); i++) {
+                JSONObject obj = (JSONObject) restsArr.get(i);
+//                Log.d("zip is", obj.getString("postal_code"));
+                Restaurant r = new Restaurant((JSONObject) restsArr.get(i));
+                restaurants.add(r);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Collections.shuffle(restaurants);
+//        Restaurant rest = it.next();
+//        double lat = new Double(rest.getLat());
+//        double lon = new Double(rest.getLng());
+
+        Log.e("rest coord", restaurants.size() + "");
+        Iterator<Restaurant> it = restaurants.iterator();
+        while (it.hasNext()){
+            Restaurant r = it.next();
+//            Log.d("restaurant name", r.getName() + " ");
+//            Log.d("restaurant zip", r.getZip() + " ");
+            getDistance(r);
+        }
+
+        Restaurant r = restaurants.get(0);
+        Log.i("getLat", r.getLat());
+        Log.i("getLng", r.getLng());
+        getMap(new Double(r.getLat()), new Double(r.getLng()), r.getName());
+
+        // ---------------------
+    }
 
 
     public void nextSuggestion(View view) {
@@ -180,7 +182,7 @@ public class SuggestionActivity extends Activity {
                 "drawable", context.getPackageName());
     }
 
-    public void getMap(double restaurantLat, double restaurantLng) {
+    public void getMap(double restaurantLat, double restaurantLng, String restaurantName) {
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
@@ -206,12 +208,13 @@ public class SuggestionActivity extends Activity {
         mApiClient.connect();
 
         // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
-        WatchMessenger.sendMessage(mApiClient, "/map", currLat + ":" + currLon + "_" + restaurantLat + ":" + restaurantLng);
+
+        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng+":"+restaurantName );
     }
 
     public double getDistance(Restaurant targetRestaurant) {
-        Log.e("location", "current location: " + currLat + ":" + currLon);
-        Log.e("location", "target location: " + targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
+//        Log.e("location", "current location: "+ currLat + ":" + currLon);
+//        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
 
         double output = 0;
         Location start = new Location("start");

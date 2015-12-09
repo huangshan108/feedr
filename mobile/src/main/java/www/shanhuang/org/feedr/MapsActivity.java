@@ -48,16 +48,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double CURRENT_LAT ;
     double CURRENT_LOG ;
 
+    String location_data;
+    String restaurantName;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
         Intent creatorIntent = getIntent();
-        String data = creatorIntent.getStringExtra("locations");
-        Log.e("data", data + " ");
+        location_data = creatorIntent.getStringExtra("locations");
+        Log.e("data", location_data + " ");
         // data is in the format currLat:currLong::restaurantLat:restaurantLong
-        String[] parsed = data.split("_");
+        String[] parsed = location_data.split("_");
         Log.e("curr", parsed[0]);
         Log.e("rest", parsed[1]);
 
@@ -67,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CURRENT_LOG = new Double(current[1]);
         TARGET_LAT = new Double(target[0]);
         TARGET_LOG = new Double(target[1]);
+        restaurantName = target[2];
 
         setContentView(R.layout.activity_maps);
 //         Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -96,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
-        mMap.addMarker(new MarkerOptions().position(target).title("Target"));
+        mMap.addMarker(new MarkerOptions().position(target).title(restaurantName));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(target));
     }
 
@@ -238,6 +244,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Intent mobileListenerService = new Intent(this, MobileListenerService.class);
             mobileListenerService.putExtra("command", "map");
             mobileListenerService.putExtra("encoding", encodedString);
+            mobileListenerService.putExtra("location_data", location_data);
+            mobileListenerService.putExtra("restaurantName", restaurantName);
             startService(mobileListenerService);
 
 
