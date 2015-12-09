@@ -161,7 +161,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
-        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
+//        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
         String rating = next.getRating();
         String stars = "*";
         switch (rating) {
@@ -195,7 +195,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         df.applyPattern("##.##");
         double dist = getDistance(next) / 1000 / 1.6;
 
-       information.setText(" " + next.getName() + "\n Price: " + next.getPrice() + "\n Distance: " + df.format(dist) + "mi \n Ratings: " + rating );
+       information.setText(" " + next.getName() + " \n Price: " + next.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
     }
 
     int index =0;
@@ -406,7 +406,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
-        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
+//        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
         String rating = next.getRating();
         String stars = "*";
         switch (rating) {
@@ -440,7 +440,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         df.applyPattern("##.##");
         double dist = getDistance(next) / 1000 / 1.6;
 
-        information.setText(next.getName() + "\n Price: " + next.getPrice() + "\n Distance: " + df.format(dist) + "mi \n Ratings: " + rating );
+        information.setText(" " + next.getName() + " \n Price: " + next.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
     }
 
 }
