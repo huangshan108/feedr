@@ -147,46 +147,46 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         // get next information from mobile, then use that to build the next suggestion
 
         // TODO: get info from mobile then add to intent and start new activity
-        Restaurant next = getNextRestaurant();
+        targetRestaurant = getNextRestaurant();
 
 
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
 //        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
-        String rating = next.getRating();
+        String rating = targetRestaurant.getRating();
         String stars = "*";
         switch (rating) {
-                case "1":
+            case "1":
 //                    ratings.setBackgroundResource(R.mipmap.star_1);
-                    stars = "*";
-                    break;
-                case "1.5":
-                case "2":
+                stars = "*";
+                break;
+            case "1.5":
+            case "2":
 //                    ratings.setBackgroundResource(R.mipmap.star_2);
-                    stars = "**";
-                    break;
-                case "2.5":
-                case "3":
+                stars = "**";
+                break;
+            case "2.5":
+            case "3":
 //                    ratings.setBackgroundResource(R.mipmap.star_3);
-                    stars = "***";
-                    break;
-                case "3.5":
-                case "4":
+                stars = "***";
+                break;
+            case "3.5":
+            case "4":
 //                    ratings.setBackgroundResource(R.mipmap.star_4);
-                    stars = "****";
-                    break;
-                case "4.5":
-                default:
+                stars = "****";
+                break;
+            case "4.5":
+            default:
 //                    ratings.setBackgroundResource(R.mipmap.star_5);
-                    stars = "*****";
-                    break;
+                stars = "*****";
+                break;
         }
 
         DecimalFormat df = new DecimalFormat();
         df.applyPattern("##.##");
-        double dist = getDistance(next) / 1000 / 1.6;
+        double dist = getDistance(targetRestaurant) / 1000 / 1.6;
 
-       information.setText(" " + next.getName() + " \n Price: " + next.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
+        information.setText(" " + targetRestaurant.getName() + " \n Price: " + targetRestaurant.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
     }
 
     int index =0;
