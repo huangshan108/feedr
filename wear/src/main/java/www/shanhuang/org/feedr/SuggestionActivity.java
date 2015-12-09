@@ -107,7 +107,9 @@ public class SuggestionActivity extends Activity {
         }
 
         Restaurant r = restaurants.get(0);
-        getMap(new Double(r.getLat()), new Double(r.getLng()));
+        Log.i("getLat", r.getLat());
+        Log.i("getLng", r.getLng());
+        getMap(new Double(r.getLat()), new Double(r.getLng()), r.getName());
 
         // ---------------------
     }
@@ -147,7 +149,7 @@ public class SuggestionActivity extends Activity {
                 "drawable", context.getPackageName());
     }
 
-    public void getMap(double restaurantLat, double restaurantLng) {
+    public void getMap(double restaurantLat, double restaurantLng, String restaurantName) {
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
@@ -173,7 +175,7 @@ public class SuggestionActivity extends Activity {
         mApiClient.connect();
 
         // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
-        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng );
+        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng+":"+restaurantName );
     }
 
     public double getDistance(Restaurant targetRestaurant) {

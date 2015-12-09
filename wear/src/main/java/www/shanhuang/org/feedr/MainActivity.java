@@ -71,7 +71,4 @@ public class MainActivity extends Activity {
         Intent preferenceIntent = new Intent(this, PreferenceActivity.class);
         startActivity(preferenceIntent);
     }
-
-
-
 }
