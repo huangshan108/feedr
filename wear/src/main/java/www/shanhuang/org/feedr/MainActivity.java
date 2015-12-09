@@ -58,9 +58,9 @@ public class MainActivity extends Activity {
 
     public void startSuggestion() {
 
-        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-        suggestionIntent.putExtra("image", "img_1");
-        startActivity(suggestionIntent);
+//        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
+//        suggestionIntent.putExtra("image", "img_1");
+//        startActivity(suggestionIntent);
         Intent WLS_intent = new Intent(this, WatchListenerService.class);
         WLS_intent.putExtra("note", "get_suggestion");
         startService(WLS_intent);

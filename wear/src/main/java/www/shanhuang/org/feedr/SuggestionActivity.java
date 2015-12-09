@@ -99,6 +99,7 @@ public class SuggestionActivity extends Activity {
 
 
         String data = creatorIntent.getStringExtra("data");
+        Log.i("data", data);
         int index =  data.indexOf("||");
         String json = data.substring(index + 2);
         String location = data.substring(0,index);
