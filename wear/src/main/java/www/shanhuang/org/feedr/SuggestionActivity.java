@@ -1,14 +1,19 @@
 package www.shanhuang.org.feedr;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -44,9 +51,28 @@ public class SuggestionActivity extends Activity {
          **/
         // just for prog03:
         currImage = creatorIntent.getStringExtra("image");
-        final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
+        ImageButton go = (ImageButton) findViewById(R.id.suggestion_1_button);
+        ImageButton map = (ImageButton) findViewById(R.id.suggestion_2_button);
+
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Map getting", "mapped");
+                //getMap();
+            }
+        });
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Getting next suggestion", "gott");
+                nextSuggestion(view);
+            }
+        });
     }
+
+
+    //final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
+    //pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
 
 //        ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
 //        boolean isnull = ib == null;
@@ -143,6 +169,7 @@ public class SuggestionActivity extends Activity {
         startActivity(suggestionIntent);
     }
 
+
     public static int getDrawable(Context context, String name) {
 
         // dynamically get image id
@@ -164,8 +191,8 @@ public class SuggestionActivity extends Activity {
 //        startActivity(mapIntent);
 
         // connect the ApiClient, and send message
-        GoogleApiClient mApiClient = new GoogleApiClient.Builder( this )
-                .addApi( Wearable.API )
+        GoogleApiClient mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
@@ -179,12 +206,12 @@ public class SuggestionActivity extends Activity {
         mApiClient.connect();
 
         // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
-        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng );
+        WatchMessenger.sendMessage(mApiClient, "/map", currLat + ":" + currLon + "_" + restaurantLat + ":" + restaurantLng);
     }
 
     public double getDistance(Restaurant targetRestaurant) {
-        Log.e("location", "current location: "+ currLat + ":" + currLon);
-        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
+        Log.e("location", "current location: " + currLat + ":" + currLon);
+        Log.e("location", "target location: " + targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
 
         double output = 0;
         Location start = new Location("start");
@@ -199,3 +226,4 @@ public class SuggestionActivity extends Activity {
 
     }
 }
+
