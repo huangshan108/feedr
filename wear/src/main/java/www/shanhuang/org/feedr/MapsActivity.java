@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class MapsActivity extends Activity implements
     private GoogleMap mMap;
 
     double TARGET_LAT;
-    double TARGET_LOG ;
+    double TARGET_LOG;
 
     double CURRENT_LAT;
     double CURRENT_LOG;
