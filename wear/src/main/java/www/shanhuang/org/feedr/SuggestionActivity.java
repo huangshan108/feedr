@@ -118,15 +118,17 @@ public class SuggestionActivity extends Activity {
 
         Restaurant r = restaurants.get(0);
 //        getMap(new Double(r.getLat()), new Double(r.getLng()));
-        TextView tv = (TextView) findViewById(R.id.info);
+        final TextView tv = (TextView) findViewById(R.id.info);
         tv.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
                 Log.e("Swipe", "left swipe detected");
+                tv.setText("oh look a left swipe");
             }
             @Override
             public void onSwipeRight() {
                 Log.e("Swipe", "right swipe detected");
+                tv.setText("oh look a right swipe");
 
             }
         });
