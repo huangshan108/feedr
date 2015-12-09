@@ -1,11 +1,11 @@
 package www.shanhuang.org.feedr;
 
-import android.content.Intent;
-import android.media.Image;
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 
 public class PreferenceActivity extends Activity {
@@ -34,47 +34,36 @@ public class PreferenceActivity extends Activity {
 
     public void onPreferencesButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
 
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.dist_radioButton1:
-                if (checked)
-                    distance_filter = 1;
-                    break;
+                if (checked) editor.putInt("distance", 1);
+                break;
             case R.id.dist_radioButton2:
-                if (checked)
-                    distance_filter = 2;
-                    break;
+                if (checked) editor.putInt("distance", 2);
+                break;
             case R.id.dist_radioButton3:
-                if (checked)
-                    distance_filter = 3;
-                    break;
+                if (checked) editor.putInt("distance", 3);
+                break;
             case R.id.dist_radioButton4:
-                if (checked)
-                    distance_filter = 3;
-                    break;
+                if (checked) editor.putInt("distance", 4);
+                break;
             case R.id.cost_radioButton1:
-                if (checked)
-                    cost_filter = 1;
-                    break;
+                if (checked) editor.putInt("cost", 1);
+                break;
             case R.id.cost_radioButton2:
-                if (checked)
-                    cost_filter = 2;
-                    break;
+                if (checked) editor.putInt("cost", 2);
+                break;
             case R.id.cost_radioButton3:
-                if (checked)
-                    cost_filter = 3;
-                    break;
+                if (checked) editor.putInt("cost", 3);
+                break;
             case R.id.cost_radioButton4:
-                if (checked)
-                    cost_filter = 4;
-                    break;
+                if (checked) editor.putInt("cost", 4);
+                break;
         }
-        exportPreference();
-    }
-
-    protected void exportPreference() {
-        // write the changed preferences ou
     }
 
 }

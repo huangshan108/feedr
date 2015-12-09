@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 //        Intent MapIntent = new Intent(this, MapsActivity.class);
 //        startActivity(MapIntent);
 
-//        Opentable.getRestaurants("94704");
+        Opentable.getRestaurants("94704");
     }
 
     @Override

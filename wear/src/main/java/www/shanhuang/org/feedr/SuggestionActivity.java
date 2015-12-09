@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.wearable.view.GridViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -83,13 +86,35 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         mApiClient.connect();
 
         /**
-           for actual project; uncomment later
-           data = creatorIntent.getStringExtra("data");
-           String[] parsed = data.split("|");
-        **/
+         for actual project; uncomment later
+         data = creatorIntent.getStringExtra("data");
+         String[] parsed = data.split("|");
+         **/
         // just for prog03:
-//        currImage = creatorIntent.getStringExtra("image");
-//
+        currImage = creatorIntent.getStringExtra("image");
+        ImageButton go = (ImageButton) findViewById(R.id.suggestion_1_button);
+        ImageButton map = (ImageButton) findViewById(R.id.suggestion_2_button);
+
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Map getting", "mapped");
+                //getMap();
+            }
+        });
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Getting next suggestion", "gott");
+                nextSuggestion(view);
+            }
+        });
+
+
+
+    //final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
+    //pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
+
 //        ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
 //        boolean isnull = ib == null;
 //        Log.d("image button is null", isnull + "");
@@ -108,12 +133,14 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 //        ib.setOnLongClickListener(new View.OnLongClickListener() {
 //            @Override
 //            public boolean onLongClick(View vew) {
-//                getMap();
+//                //getMap();
 //                return true;
 //            }
 //        });
 
+
         String data = creatorIntent.getStringExtra("data");
+        Log.i("data", data);
         int index =  data.indexOf("||");
         json = data.substring(index + 2);
         String location = data.substring(0,index);
@@ -138,9 +165,12 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         }
 
         Restaurant r = restaurants.get(0);
-        getImage(r);
+//        getImage(r);
 //        getMap(new Double(r.getLat()), new Double(r.getLng()));
 
+//        Log.i("getLat", r.getLat());
+//        Log.i("getLng", r.getLng());
+//        getMap(new Double(r.getLat()), new Double(r.getLng()), r.getName());
 
         // ---------------------
     }
@@ -273,6 +303,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
     }
 
+
     public static int getDrawable(Context context, String name) {
 
         // dynamically get image id
@@ -283,7 +314,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
                 "drawable", context.getPackageName());
     }
 
-    public void getMap(double restaurantLat, double restaurantLng) {
+    public void getMap(double restaurantLat, double restaurantLng, String restaurantName) {
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
@@ -294,8 +325,8 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 //        startActivity(mapIntent);
 
         // connect the ApiClient, and send message
-        GoogleApiClient mApiClient = new GoogleApiClient.Builder( this )
-                .addApi( Wearable.API )
+        GoogleApiClient mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
@@ -309,7 +340,8 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         mApiClient.connect();
 
         // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
-        WatchMessenger.sendMessage(mApiClient, "/map", currLat + ":" + currLon + "_" + restaurantLat + ":" + restaurantLng);
+
+        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng+":"+restaurantName );
     }
 
     public double getDistance(Restaurant targetRestaurant) {
@@ -415,3 +447,4 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
     };
 
 }
+

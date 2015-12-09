@@ -50,12 +50,13 @@ public class MapsActivity extends Activity implements
     private GoogleMap mMap;
 
     double TARGET_LAT;
-    double TARGET_LOG ;
+    double TARGET_LOG;
 
     double CURRENT_LAT;
     double CURRENT_LOG;
 
     String encoding;
+    String restaurantName;
     GoogleApiClient googleApiClient;
 
     public void onCreate(Bundle savedState) {
@@ -86,6 +87,7 @@ public class MapsActivity extends Activity implements
         CURRENT_LOG = new Double(points[0].split(":")[1]);
         TARGET_LAT = new Double(points[1].split(":")[0]);
         TARGET_LOG = new Double(points[1].split(":")[1]);
+        restaurantName = points[1].split(":")[2];
 
 
         Log.e("encoding", encoding);
@@ -93,6 +95,7 @@ public class MapsActivity extends Activity implements
         Log.e("curr_log", CURRENT_LOG + "");
         Log.e("tar_lat", TARGET_LAT + "");
         Log.e("tar_log", TARGET_LOG + "");
+        Log.i("restaurantName", restaurantName);
 
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
@@ -143,16 +146,9 @@ public class MapsActivity extends Activity implements
         // Set the long click listener as a way to exit the map.
         mMap.setOnMapLongClickListener(this);
 
-        // Add a marker in Sydney, Australia and move the camera.
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
-        mMap.addMarker(new MarkerOptions().position(target).title("Target"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.addMarker(new MarkerOptions().position(target).title(restaurantName));
 
-        setUpMap();
-
-        // encodedString should be received here.
-//        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
-//        Log.i("LIST", encodedString);
         List<LatLng> list = decodePoly(encoding);
 
         PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#00B3Fd")).geodesic(true);
@@ -161,6 +157,7 @@ public class MapsActivity extends Activity implements
             options.add(point);
         }
         mMap.addPolyline(options);
+        setUpMap();
     }
 
     private List<LatLng> decodePoly(String encoded) {
@@ -211,6 +208,7 @@ public class MapsActivity extends Activity implements
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
         mMap.moveCamera(center);
         mMap.animateCamera(zoom);
+        Log.i("setUpMap", "FLAG");
     }
 
     @Override

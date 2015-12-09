@@ -49,6 +49,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double CURRENT_LOG ;
 
     String location_data;
+    String restaurantName;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CURRENT_LOG = new Double(current[1]);
         TARGET_LAT = new Double(target[0]);
         TARGET_LOG = new Double(target[1]);
+        restaurantName = target[2];
 
         setContentView(R.layout.activity_maps);
 //         Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -98,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
-        mMap.addMarker(new MarkerOptions().position(target).title("Target"));
+        mMap.addMarker(new MarkerOptions().position(target).title(restaurantName));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(target));
     }
 
@@ -241,6 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mobileListenerService.putExtra("command", "map");
             mobileListenerService.putExtra("encoding", encodedString);
             mobileListenerService.putExtra("location_data", location_data);
+            mobileListenerService.putExtra("restaurantName", restaurantName);
             startService(mobileListenerService);
 
 
