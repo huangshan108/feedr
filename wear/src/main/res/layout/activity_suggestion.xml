@@ -1,34 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="fill_parent"-->
-    <!--tools:deviceIds="wear_round"-->
-    <!--tools:context="www.shanhuang.org.feedr.SuggestionActivity"-->
-    <!-->-->
-
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:deviceIds="wear_round"
+    tools:context="www.shanhuang.org.feedr.SuggestionActivity"
+    android:orientation="horizontal"
+    android:weightSum="6">
 
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/suggestion_1_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:onClick="nextSuggestion"-->
-            <!--/>-->
 
-    <!--</RelativeLayout>-->
+    <ImageButton
+        android:layout_weight="1.5"
+        android:id="@+id/suggestion_1_button"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:onClick="nextSuggestion"
+        android:src="@drawable/nextt"/>
 
-<!--</ScrollView>-->
+    <LinearLayout
+        android:layout_weight="3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:weightSum="6"
+        android:orientation="vertical">
 
-<android.support.wearable.view.GridViewPager
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        <ImageView
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/restaurant_image"/>
+
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:width="0dip"
+            android:text="THIS IS SAMPLE TEXT THAT IS SUPPOSED TO WRAP AROUND DOES IT"
+            android:textSize="12sp"/>
+
+
+
+        <ImageView
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/restaurant_rating"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/suggestion_2_button"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:onClick="getMap"
+        android:src="@drawable/maps_icon"
+        android:backgroundTint="@color/green"
+        android:layout_weight="1.5"/>
+
+
+</LinearLayout>
+
+<!--<android.support.wearable.view.GridViewPager-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/pager"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
     <!--android:layout_width="fill_parent"-->
     <!--android:layout_height="fill_parent"-->
