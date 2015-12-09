@@ -33,13 +33,13 @@
             android:id="@+id/restaurant_image"/>
 
         <TextView
+            android:id="@+id/restaurant_info"
             android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:width="0dip"
             android:text="THIS IS SAMPLE TEXT THAT IS SUPPOSED TO WRAP AROUND DOES IT"
             android:textSize="12sp"/>
-
 
 
         <ImageView

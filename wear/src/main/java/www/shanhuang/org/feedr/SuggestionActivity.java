@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,30 +116,6 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
     //final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
     //pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
 
-//        ImageButton ib = (ImageButton) findViewById(R.id.suggestion_1_button);
-//        boolean isnull = ib == null;
-//        Log.d("image button is null", isnull + "");
-//        // this is just for prog03
-//        switch (currImage) {
-//            case "img_1":
-//                ib.setBackgroundResource(R.mipmap.restaurant1);
-//                break;
-//            case "img_2":
-//                ib.setBackgroundResource(R.mipmap.restaurant2);
-//                break;
-//            case "img_3":
-//                ib.setBackgroundResource(R.mipmap.restaurant3);
-//                break;
-//        }
-//        ib.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View vew) {
-//                //getMap();
-//                return true;
-//            }
-//        });
-
-
         String data = creatorIntent.getStringExtra("data");
         Log.i("data", data);
         int index =  data.indexOf("||");
@@ -151,47 +128,21 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
         Log.e("json", json);
         getRestaurantList();
-//        Restaurant rest = it.next();
-//        double lat = new Double(rest.getLat());
-//        double lon = new Double(rest.getLng());
 
-        Log.e("rest coord", restaurants.size() + "");
-        Iterator<Restaurant> it = restaurants.iterator();
-        while (it.hasNext()){
-            Restaurant r = it.next();
-//            Log.d("restaurant name", r.getName() + " ");
-//            Log.d("restaurant zip", r.getZip() + " ");
-            getDistance(r);
-        }
-
-        Restaurant r = restaurants.get(0);
-//        getImage(r);
-//        getMap(new Double(r.getLat()), new Double(r.getLng()));
-
-//        Log.i("getLat", r.getLat());
-//        Log.i("getLng", r.getLng());
-//        getMap(new Double(r.getLat()), new Double(r.getLng()), r.getName());
+//        Log.e("rest coord", restaurants.size() + "");
+//        Iterator<Restaurant> it = restaurants.iterator();
+//        while (it.hasNext()){
+//            Restaurant r = it.next();
+//            getDistance(r);
+//        }
 
         // ---------------------
+        fill();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent= new Intent(this, WatchListenerService.class);
-        bindService(intent, mConnection,
-                Context.BIND_AUTO_CREATE);
-        /** Handler is to wait for LocationService to connect and get the location.
-         *  Then make the calls to get the location without causing an error.
-         * **/
-        Log.e("bound", "service bound");
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                // run after waiting  WAIT_TIME ms
-//            }
-//        }, WAIT_TIME);
     }
 
     @Override
@@ -205,81 +156,77 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         // get next information from mobile, then use that to build the next suggestion
 
         // TODO: get info from mobile then add to intent and start new activity
-
-//        Intent suggestionIntent = new Intent(this, SuggestionActivity.class);
-//
-//        /** set the next imagebutton src **/
-//        String next = "";
-//        switch (currImage) {
-//            case "img_1":
-//                next = "img_2";
-//                break;
-//            case "img_2":
-//                next = "img_3";
-//                break;
-//            case "img_3":
-//                next = "img_1";
-//                break;
-//        }
-//        suggestionIntent.putExtra("image", next);
-//        startActivity(suggestionIntent);
         Restaurant next = getNextRestaurant();
 
 
-        /**
-         *
-         * uncomment when new layout is done
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
-        ImageView ratings = (ImageView) findViewById(R.id.ratings);
+        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
         String rating = next.getRating();
+        String stars = "*";
         switch (rating) {
-            case "1":
-                break;
-                ratings.setBackground(R.mipmap.1_star);
-            case "1.5":
-            case "2":
-                ratings.setBackground(R.mipmap.2_star);
-                break;
-            case "2.5":
-            case "3":
-                ratings.setBackground(R.mipmap.3_star);
-                break;
-            case "3.5":
-            case "4":
-                ratings.setBackground(R.mipmap.4_star);
-                break;
-            case "4.5":
-            default:
-                ratings.setBackground(R.mipmap.5_star);
-                break;
+                case "1":
+//                    ratings.setBackgroundResource(R.mipmap.star_1);
+                    stars = "*";
+                    break;
+                case "1.5":
+                case "2":
+//                    ratings.setBackgroundResource(R.mipmap.star_2);
+                    stars = "**";
+                    break;
+                case "2.5":
+                case "3":
+//                    ratings.setBackgroundResource(R.mipmap.star_3);
+                    stars = "***";
+                    break;
+                case "3.5":
+                case "4":
+//                    ratings.setBackgroundResource(R.mipmap.star_4);
+                    stars = "****";
+                    break;
+                case "4.5":
+                default:
+//                    ratings.setBackgroundResource(R.mipmap.star_5);
+                    stars = "*****";
+                    break;
         }
-       information.setText(next.getName() + "\n Price: " + next.getPrice() + " Distance: " + getDistance(next) );
-         **/
+
+        DecimalFormat df = new DecimalFormat();
+        df.applyPattern("##.##");
+        double dist = getDistance(next) / 1000 / 1.6;
+
+       information.setText(" " + next.getName() + "\n Price: " + next.getPrice() + "\n Distance: " + df.format(dist) + "mi \n Ratings: " + rating );
     }
+
+    int index =0;
 
     // returns the next restaurant based on the preferences
     protected Restaurant getNextRestaurant() {
         // get preferences
 
-        int cost_position = 2; // change to value loaded
-        double distance_position = 0.5; // change to value loaded
+        int cost_position = 4; // change to value loaded
+        double distance_position = 5; // change to value loaded
 
 
-        for (Restaurant restaurant : restaurants) {
-            double distance = getDistance(restaurant);
-            int cost = new Integer(restaurant.getPrice());
-            if (cost <= cost_position && distance <= distance_position ) {
-                restaurants.remove(restaurant);
-                return restaurant;
-            }
-        }
-
+//        for (Restaurant restaurant : restaurants) {
+//            double distance = getDistance(restaurant);
+//            int cost = new Integer(restaurant.getPrice());
+//            if (cost <= cost_position && distance <= distance_position ) {
+//                Log.e("filter", "in here");
+//                restaurants.remove(restaurant);
+//                return restaurant;
+//            } else {
+//                Log.e("filter", "not filtering correctly");
+//            }
+//        }
+        Restaurant out = restaurants.get(index);
+        index = (index+1)%3;
+        return out;
         // if we get here, we reuse the restaurant list
-        restaurants = backup;
-        Collections.shuffle(backup);
-        getNextRestaurant();
-        return null;
+//        restaurants = backup;
+//        Collections.shuffle(backup);
+//        getNextRestaurant();
+//        return null;
     }
 
     protected void getRestaurantList() {
@@ -287,7 +234,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         JSONArray restsArr = new JSONArray();
         restaurants = new ArrayList<Restaurant>();
         try {
-            String data = "{\"total_entries\":3,\"per_page\":100,\"current_page\":1,\"restaurants\":[{\"id\":84985,\"name\":\"Tako Sushi\",\"address\":\"2379 Telegraph Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5106658000\",\"lat\":37.867274,\"lng\":-122.258646,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://s3-media3.fl.yelpcdn.com/bphoto/c2w2geSA0XBbE5MPsXT3fg/348s.jpg\"}, {\"id\":84986,\"name\":\"Cheese Board Pizza\",\"address\":\"1512 Shattuck Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94709\",\"country\":\"US\",\"phone\":\"5105493183\",\"lat\":37.879853,\"lng\":-122.269516,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://www.berkeleyside.com/wp-content/uploads/2011/06/Pizza-from-Cheese-Board.jpg\"}, {\"id\":84987,\"name\":\"Gypsy's\",\"address\":\"2519 Durant Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5105484860\",\"lat\":37.868098,\"lng\":-122.258136,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://image.zmenu.com/large/14460/20131206063723739974.jpg\"}]}";
+            String data = "{\"total_entries\":3,\"per_page\":100,\"current_page\":1,\"restaurants\":[{\"id\":84985,\"name\":\"Tako Sushi\",\"address\":\"2379 Telegraph Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5106658000\",\"lat\":37.867274,\"lng\":-122.258646,\"price\":2,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://s3-media3.fl.yelpcdn.com/bphoto/c2w2geSA0XBbE5MPsXT3fg/348s.jpg\"}, {\"id\":84986,\"name\":\"Cheese Board Pizza\",\"address\":\"1512 Shattuck Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94709\",\"country\":\"US\",\"phone\":\"5105493183\",\"lat\":37.879853,\"lng\":-122.269516,\"price\":3,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://www.berkeleyside.com/wp-content/uploads/2011/06/Pizza-from-Cheese-Board.jpg\"}, {\"id\":84987,\"name\":\"Gypsy's\",\"address\":\"2519 Durant Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5105484860\",\"lat\":37.868098,\"lng\":-122.258136,\"price\":2,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://image.zmenu.com/large/14460/20131206063723739974.jpg\"}]}";
 
 //            restsObj = new JSONObject(json);
             restsObj = new JSONObject(data);
@@ -302,7 +249,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
             e.printStackTrace();
         }
         backup = restaurants;
-        Collections.shuffle(restaurants);
+//        Collections.shuffle(restaurants);
 
     }
 
@@ -448,6 +395,53 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
             wls = null;
         }
     };
+
+
+
+    /** filling up initially **/
+
+    private void fill() {
+        Restaurant next = getNextRestaurant();
+
+
+        TextView information = (TextView) findViewById(R.id.restaurant_info);
+        ImageView image = (ImageView) findViewById(R.id.restaurant_image);
+        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
+        String rating = next.getRating();
+        String stars = "*";
+        switch (rating) {
+            case "1":
+//                    ratings.setBackgroundResource(R.mipmap.star_1);
+                stars = "*";
+                break;
+            case "1.5":
+            case "2":
+//                    ratings.setBackgroundResource(R.mipmap.star_2);
+                stars = "**";
+                break;
+            case "2.5":
+            case "3":
+//                    ratings.setBackgroundResource(R.mipmap.star_3);
+                stars = "***";
+                break;
+            case "3.5":
+            case "4":
+//                    ratings.setBackgroundResource(R.mipmap.star_4);
+                stars = "****";
+                break;
+            case "4.5":
+            default:
+//                    ratings.setBackgroundResource(R.mipmap.star_5);
+                stars = "*****";
+                break;
+        }
+
+        DecimalFormat df = new DecimalFormat();
+        df.applyPattern("##.##");
+        double dist = getDistance(next) / 1000 / 1.6;
+
+        information.setText(next.getName() + "\n Price: " + next.getPrice() + "\n Distance: " + df.format(dist) + "mi \n Ratings: " + rating );
+    }
 
 }
 
