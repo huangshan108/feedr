@@ -19,91 +19,103 @@
             android:layout_height="match_parent"
             android:src="@mipmap/preferences_full"
             />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cost">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$"
+                android:id="@+id/cost_radioButton1"
+                android:layout_marginTop="55dp"
+                android:layout_marginLeft="75dp"
+                android:layout_alignParentTop="true"
+                android:textColor="@color/black"
+                android:onClick="onPreferencesButtonClicked"
+                android:buttonTint="@color/dark_grey" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$"
-            android:id="@+id/cost_radioButton1"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="75dp"
-            android:layout_alignParentTop="true"
-            android:textColor="@color/black"
-            android:onClick="onPreferencesButtonClicked"
-            android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$$"
+                android:id="@+id/cost_radioButton2"
+                android:layout_below="@+id/cost_radioButton1"
+                android:layout_marginLeft="75dp"
+                android:textColor="@color/black"
+                android:onClick="onPreferencesButtonClicked"
+                android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$$$"
+                android:id="@+id/cost_radioButton3"
+                android:layout_below="@+id/cost_radioButton2"
+                android:layout_marginLeft="75dp"
+                android:textColor="@color/black"
+                android:onClick="onPreferencesButtonClicked"
+                android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$$$$"
+                android:id="@+id/cost_radioButton4"
+                android:layout_below="@+id/cost_radioButton3"
+                android:layout_marginLeft="75dp"
+                android:textColor="@color/black"
+                android:onClick="onPreferencesButtonClicked"
+                android:buttonTint="@color/dark_grey" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$$"
-            android:id="@+id/cost_radioButton2"
-            android:layout_below="@+id/cost_radioButton1"
-            android:layout_marginLeft="75dp"
-            android:textColor="@color/black"
-            android:onClick="onPreferencesButtonClicked"
-            android:buttonTint="@color/dark_grey" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$$$"
-            android:id="@+id/cost_radioButton3"
-            android:layout_below="@+id/cost_radioButton2"
-            android:layout_marginLeft="75dp"
-            android:textColor="@color/black"
-            android:onClick="onPreferencesButtonClicked"
-            android:buttonTint="@color/dark_grey" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$$$$"
-            android:id="@+id/cost_radioButton4"
-            android:layout_below="@+id/cost_radioButton3"
-            android:layout_marginLeft="75dp"
-            android:textColor="@color/black"
-            android:onClick="onPreferencesButtonClicked"
-            android:buttonTint="@color/dark_grey" />
 
-        <RadioButton
+        </RadioGroup>
+
+        <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="&lt; 0.2 mi"
-            android:id="@+id/dist_radioButton1"
-            android:layout_below="@+id/cost_radioButton4"
-            android:layout_marginLeft="65dp"
-            android:onClick="onPreferencesButtonClicked"
-            android:layout_marginTop="85dp"
-            android:textColor="@color/black"
-            android:buttonTint="@color/dark_grey" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt; 0.5 mi"
-            android:id="@+id/dist_radioButton2"
-            android:layout_below="@+id/dist_radioButton1"
-            android:layout_marginLeft="65dp"
-            android:onClick="onPreferencesButtonClicked"
-            android:textColor="@color/black"
-            android:buttonTint="@color/dark_grey" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt; 1 mi"
-            android:id="@+id/dist_radioButton3"
-            android:layout_below="@+id/dist_radioButton2"
-            android:layout_marginLeft="65dp"
-            android:onClick="onPreferencesButtonClicked"
-            android:textColor="@color/black"
-            android:buttonTint="@color/dark_grey" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt; 2 mi"
-            android:id="@+id/dist_radioButton4"
-            android:layout_below="@+id/dist_radioButton3"
-            android:layout_marginLeft="65dp"
-            android:textColor="@color/black"
-            android:onClick="onPreferencesButtonClicked"
-            android:buttonTint="@color/dark_grey" />
+            android:layout_below="@+id/cost">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt; 0.2 mi"
+                android:id="@+id/dist_radioButton1"
+                android:layout_marginLeft="65dp"
+                android:onClick="onPreferencesButtonClicked"
+                android:layout_marginTop="85dp"
+                android:textColor="@color/black"
+                android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt; 0.5 mi"
+                android:id="@+id/dist_radioButton2"
+                android:layout_below="@+id/dist_radioButton1"
+                android:layout_marginLeft="65dp"
+                android:onClick="onPreferencesButtonClicked"
+                android:textColor="@color/black"
+                android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt; 1 mi"
+                android:id="@+id/dist_radioButton3"
+                android:layout_below="@+id/dist_radioButton2"
+                android:layout_marginLeft="65dp"
+                android:onClick="onPreferencesButtonClicked"
+                android:textColor="@color/black"
+                android:buttonTint="@color/dark_grey" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt; 2 mi"
+                android:id="@+id/dist_radioButton4"
+                android:layout_below="@+id/dist_radioButton3"
+                android:layout_marginLeft="65dp"
+                android:textColor="@color/black"
+                android:onClick="onPreferencesButtonClicked"
+                android:buttonTint="@color/dark_grey" />
+
+        </RadioGroup>
+
 
         <ImageButton
             android:layout_width="wrap_content"
