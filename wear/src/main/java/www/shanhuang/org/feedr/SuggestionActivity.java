@@ -68,7 +68,7 @@ public class SuggestionActivity extends Activity {
                 nextSuggestion(view);
             }
         });
-    }
+
 
 
     //final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
