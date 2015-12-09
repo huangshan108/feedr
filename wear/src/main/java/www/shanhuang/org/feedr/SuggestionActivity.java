@@ -65,6 +65,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
     Bitmap image;
     private WatchListenerService wls;
     private int WAIT_TIME = 3 *1000;
+    Restaurant targetRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
             @Override
             public void onClick(View view) {
                 Log.d("Map getting", "mapped");
-                //getMap();
+                getMap(new Double(targetRestaurant.getLat()), new Double(targetRestaurant.getLng()), targetRestaurant.getName());
             }
         });
         go.setOnClickListener(new View.OnClickListener() {
@@ -140,16 +141,6 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         fill();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindService(mConnection);
-    }
 
 
     public void nextSuggestion(View view) {
@@ -221,6 +212,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 //        }
         Restaurant out = restaurants.get(index);
         index = (index+1)%3;
+
         return out;
         // if we get here, we reuse the restaurant list
 //        restaurants = backup;
@@ -381,33 +373,16 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         return BitmapFactory.decodeStream(assetInputStream);
     }
 
-    /** Binder stuff **/
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className,
-                                       IBinder binder) {
-            Log.e("conn", "service connected");
-            WatchListenerService.MyBinder b = (WatchListenerService.MyBinder) binder;
-            wls = b.getService();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            wls = null;
-        }
-    };
-
-
-
     /** filling up initially **/
 
     private void fill() {
-        Restaurant next = getNextRestaurant();
+        targetRestaurant = getNextRestaurant();
 
 
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
 //        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
-        String rating = next.getRating();
+        String rating = targetRestaurant.getRating();
         String stars = "*";
         switch (rating) {
             case "1":
@@ -438,9 +413,9 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
         DecimalFormat df = new DecimalFormat();
         df.applyPattern("##.##");
-        double dist = getDistance(next) / 1000 / 1.6;
+        double dist = getDistance(targetRestaurant) / 1000 / 1.6;
 
-        information.setText(" " + next.getName() + " \n Price: " + next.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
+        information.setText(" " + targetRestaurant.getName() + " \n Price: " + targetRestaurant.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
     }
 
 }
