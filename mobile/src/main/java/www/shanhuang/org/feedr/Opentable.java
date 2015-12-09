@@ -38,6 +38,7 @@ public class Opentable {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder sb = new StringBuilder();
                     res.append(reader.readLine());
+                    System.out.println("THE DATA HAS TRANSFERED SUCCESSFULLY");
                     connection.disconnect();
                 } catch (Exception e) {
                     e.printStackTrace();

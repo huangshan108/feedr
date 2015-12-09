@@ -28,6 +28,9 @@
         <activity
             android:name=".PreferenceActivity"
             android:label="@string/title_activity_preference"></activity>
+        <activity
+            android:name=".AndroidSimpleGestureActivity"
+            android:label="AndroidSimpleGestureActivity"></activity>
 
         <service
             android:name=".WatchListenerService"

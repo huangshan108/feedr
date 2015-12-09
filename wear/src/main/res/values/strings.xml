@@ -6,5 +6,6 @@
     <string name="title_activity_preference">PreferenceActivity</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="hello">This is just a test string</string>
     <string name="intro_text">Long click to exit the map.</string>
 </resources>
