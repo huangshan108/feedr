@@ -21,6 +21,7 @@ public class Restaurant {
     private String price;
     private String reserveUrl;
     private String imageUrl;
+    private String rating;
 
     public Restaurant(JSONObject restaurantData) {
         try {
@@ -35,6 +36,8 @@ public class Restaurant {
             this.price = restaurantData.getString("price");
             this.reserveUrl = restaurantData.getString("mobile_reserve_url");
             this.imageUrl = restaurantData.getString("image_url");
+            this.rating = Integer.parseInt(this.zip) % 2 == 0 ? "3" : "4";
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -82,6 +85,10 @@ public class Restaurant {
 
     public String getImageUrl() {
         return this.imageUrl;
+    }
+
+    public String getRating() {
+        return this.rating;
     }
 
     @Override
