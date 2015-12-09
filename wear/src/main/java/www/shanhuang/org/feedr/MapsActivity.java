@@ -146,10 +146,8 @@ public class MapsActivity extends Activity implements
         // Set the long click listener as a way to exit the map.
         mMap.setOnMapLongClickListener(this);
 
-        // Add a marker in Sydney, Australia and move the camera.
         LatLng target = new LatLng(TARGET_LAT, TARGET_LOG);
         mMap.addMarker(new MarkerOptions().position(target).title(restaurantName));
-        setUpMap();
 
         List<LatLng> list = decodePoly(encoding);
 
@@ -159,6 +157,7 @@ public class MapsActivity extends Activity implements
             options.add(point);
         }
         mMap.addPolyline(options);
+        setUpMap();
     }
 
     private List<LatLng> decodePoly(String encoded) {
