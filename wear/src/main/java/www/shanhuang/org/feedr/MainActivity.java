@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 //        Intent mapIntent = new Intent(this, MapsActivity.class);
 //        startActivity(mapIntent);
 
-        startSuggestion();
+//        startSuggestion();
 
     }
 

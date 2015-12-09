@@ -10,6 +10,9 @@ import android.widget.RadioButton;
 
 public class PreferenceActivity extends Activity {
 
+    protected int cost_filter;
+    protected int distance_filter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,29 +39,42 @@ public class PreferenceActivity extends Activity {
         switch(view.getId()) {
             case R.id.dist_radioButton1:
                 if (checked)
+                    distance_filter = 1;
                     break;
             case R.id.dist_radioButton2:
                 if (checked)
+                    distance_filter = 2;
                     break;
             case R.id.dist_radioButton3:
                 if (checked)
+                    distance_filter = 3;
                     break;
             case R.id.dist_radioButton4:
                 if (checked)
+                    distance_filter = 3;
                     break;
             case R.id.cost_radioButton1:
                 if (checked)
+                    cost_filter = 1;
                     break;
             case R.id.cost_radioButton2:
                 if (checked)
+                    cost_filter = 2;
                     break;
             case R.id.cost_radioButton3:
                 if (checked)
+                    cost_filter = 3;
                     break;
             case R.id.cost_radioButton4:
                 if (checked)
+                    cost_filter = 4;
                     break;
         }
+        exportPreference();
+    }
+
+    protected void exportPreference() {
+        // write the changed preferences ou
     }
 
 }

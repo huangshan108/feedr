@@ -26,7 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private LocationService locationService;
     private String latLong, zip;
-    private int WAIT_TIME = 10000;
+    private int WAIT_TIME = 3 *1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                                        IBinder binder) {
             LocationService.MyBinder b = (LocationService.MyBinder) binder;
             locationService = b.getService();
+            Log.e("oSC", "im bound");
         }
 
         public void onServiceDisconnected(ComponentName className) {

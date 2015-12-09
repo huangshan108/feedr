@@ -123,7 +123,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
     }
 
-    /** Returns a String in the format "ltatitude:longitude"
+    /** Returns a String in the format "latitude:longitude"
      * **/
     String getLocation() {
 

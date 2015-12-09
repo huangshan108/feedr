@@ -1,11 +1,17 @@
 package www.shanhuang.org.feedr;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.data.FreezableUtils;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
@@ -18,17 +24,22 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WatchListenerService extends WearableListenerService {
 
     private static String MEAL_PLAN = "/meal_plan";
     private static String MAP = "/map";
+    private static String IMAGE = "/image";
     private final String PREFS_CHANGE = "/prefs_change";
     private final String PREFERENCES = "/preferences";
 
     private GoogleApiClient mApiClient;
+    protected String bitmap_string;
 
     @Override
     public void onCreate() {
@@ -89,24 +100,34 @@ public class WatchListenerService extends WearableListenerService {
             preferencesIntent.putExtra("prefs", new_data);
             startActivity(preferencesIntent);
 
+        } else if (messageEvent.getPath().equalsIgnoreCase(IMAGE)) {
+            Log.e("wls", "its here instead");
+            Log.e("the data", new_data);
+            bitmap_string = new_data;
+
+            FileOutputStream out;
+            try {
+                out = new FileOutputStream("image.txt");
+                out.write(bitmap_string.getBytes());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } else {
             super.onMessageReceived(messageEvent);
         }
 
     }
 
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        super.onDataChanged(dataEvents);
+    /** binder so Suggestion activity can get images directly from this service **/
 
-        final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
-        for (DataEvent event : events) {
-            DataItem item = event.getDataItem();
-            if (item.getUri().getPath().equalsIgnoreCase(PREFS_CHANGE)) {
-                DataMap map = DataMapItem.fromDataItem(item).getDataMap();
-                int cost = map.getInt("cost");
-                int distance = map.getInt("distance");
-            }
+    public class MyBinder extends Binder {
+        WatchListenerService getService() {
+            return WatchListenerService.this;
         }
+
     }
+
+    public String getBitmap() {return bitmap_string;}
+
 }

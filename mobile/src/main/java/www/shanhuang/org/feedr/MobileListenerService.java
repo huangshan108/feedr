@@ -1,18 +1,26 @@
 package www.shanhuang.org.feedr;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -22,11 +30,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +46,7 @@ public class MobileListenerService extends WearableListenerService {
 
     private static String MEAL_PLAN = "/meal_plan";
     private static String MAP = "/map";
+    private static String IMAGE = "/image";
     private final String PREFS_CHANGE = "/prefs_change";
 
     private String zip, latLong;
@@ -95,6 +106,23 @@ public class MobileListenerService extends WearableListenerService {
             mapIntent.putExtra("locations", new String(messageEvent.getData()));
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(mapIntent);
+        }else if (messageEvent.getPath().equalsIgnoreCase(IMAGE)) {
+            String url = new String(messageEvent.getData(), StandardCharsets.UTF_8);
+            Log.e("request received", url);
+            new LoadImage().execute(url);
+
+            int WAIT_TIME = 3000;
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Asset bitmap_image = createAssetFromBitmap(bitmap);
+                    PutDataRequest request = PutDataRequest.create("/image_2");
+                    request.putAsset("restaurant image", bitmap_image);
+                    Wearable.DataApi.putDataItem(mApiClient, request);
+                    Log.e("running", "handler running");
+                }
+            }, WAIT_TIME);
         }
         else {
             super.onMessageReceived( messageEvent );
@@ -135,4 +163,38 @@ public class MobileListenerService extends WearableListenerService {
         }).start();
     }
 
+    private static Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
+    }
+
+    Bitmap bitmap;
+
+    private class LoadImage extends AsyncTask<String, String, Bitmap> {
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+                Log.e("image found", "wohoo");
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
+
+            } catch (Exception e) {
+                Log.e("exception", e + "");
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+            if(image != null){
+                // send back the image
+                sendMessage(IMAGE, bitmap.toString());
+            }else{
+                Log.e("image error", "unable to fetch image");
+
+
+            }
+        }
+    }
 }
