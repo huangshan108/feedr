@@ -20,6 +20,12 @@
             android:onClick="nextSuggestion"
             />
 
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="\n hello \n my name is yello \n i am very mellow \n hello \n my name is yello \n i am very mellow \n hello \n my name is yello \n i am very mellow \n hello \n my name is yello \n i am very mellow "/>
+
     </RelativeLayout>
 
 </ScrollView>

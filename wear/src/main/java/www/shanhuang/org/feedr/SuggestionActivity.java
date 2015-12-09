@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -25,10 +27,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
+import android.widget.TextView;
+
 public class SuggestionActivity extends Activity {
     String currImage;
     String zip;
     double currLat, currLon;
+
+    TextView gestureEvent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +117,19 @@ public class SuggestionActivity extends Activity {
         }
 
         Restaurant r = restaurants.get(0);
-        getMap(new Double(r.getLat()), new Double(r.getLng()));
+//        getMap(new Double(r.getLat()), new Double(r.getLng()));
+        TextView tv = (TextView) findViewById(R.id.info);
+        tv.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                Log.e("Swipe", "left swipe detected");
+            }
+            @Override
+            public void onSwipeRight() {
+                Log.e("Swipe", "right swipe detected");
 
+            }
+        });
         // ---------------------
     }
 
@@ -173,7 +194,7 @@ public class SuggestionActivity extends Activity {
         mApiClient.connect();
 
         // tell mobile to get the directions to the restaurant, which then gets the directions and tells wear to launch MapsActivity
-        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng );
+//        WatchMessenger.sendMessage(mApiClient, "/map", currLat+":"+currLon+"_"+restaurantLat+":"+restaurantLng );
     }
 
     public double getDistance(Restaurant targetRestaurant) {
@@ -192,4 +213,54 @@ public class SuggestionActivity extends Activity {
         return output;
 
     }
+
+    // gesture code
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        // TODO Auto-generated method stub
+//        return gestureDetector.onTouchEvent(event);
+//    }
+//
+//    SimpleOnGestureListener simpleOnGestureListener
+//            = new SimpleOnGestureListener(){
+//
+//
+//        @Override
+//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+//                               float velocityY) {
+//            String swipe = "";
+//            float sensitvity = 50;
+//
+//            gestureEvent.setText("onFling: \n" + e1.toString() + "\n" + e2.toString() +"\n"
+//                    + "velocityX= " + String.valueOf(velocityX) + "\n"
+//                    + "velocityY= " + String.valueOf(velocityY) + "\n");
+//            // TODO Auto-generated method stub
+//            if((e1.getX() - e2.getX()) > sensitvity){
+//                swipe += "Swipe Left\n";
+//            }else if((e2.getX() - e1.getX()) > sensitvity){
+//                swipe += "Swipe Right\n";
+//            }else{
+//                swipe += "\n";
+//            }
+//
+//            if((e1.getY() - e2.getY()) > sensitvity){
+//                swipe += "Swipe Up\n";
+//            }else if((e2.getY() - e1.getY()) > sensitvity){
+//                swipe += "Swipe Down\n";
+//            }else{
+//                swipe += "\n";
+//            }
+//
+//            gestureEvent.setText(swipe);
+//
+//            return super.onFling(e1, e2, velocityX, velocityY);
+//        }
+//    };
+//
+//    GestureDetector gestureDetector
+//            = new GestureDetector(simpleOnGestureListener);
+
 }
+
+
