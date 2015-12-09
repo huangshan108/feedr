@@ -287,12 +287,15 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         JSONArray restsArr = new JSONArray();
         restaurants = new ArrayList<Restaurant>();
         try {
-            restsObj = new JSONObject(json);
+            String data = "{\"total_entries\":3,\"per_page\":100,\"current_page\":1,\"restaurants\":[{\"id\":84985,\"name\":\"Tako Sushi\",\"address\":\"2379 Telegraph Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5106658000\",\"lat\":37.867274,\"lng\":-122.258646,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://s3-media3.fl.yelpcdn.com/bphoto/c2w2geSA0XBbE5MPsXT3fg/348s.jpg\"}, {\"id\":84986,\"name\":\"Cheese Board Pizza\",\"address\":\"1512 Shattuck Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94709\",\"country\":\"US\",\"phone\":\"5105493183\",\"lat\":37.879853,\"lng\":-122.269516,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://www.berkeleyside.com/wp-content/uploads/2011/06/Pizza-from-Cheese-Board.jpg\"}, {\"id\":84987,\"name\":\"Gypsy's\",\"address\":\"2519 Durant Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5105484860\",\"lat\":37.868098,\"lng\":-122.258136,\"price\":1,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://image.zmenu.com/large/14460/20131206063723739974.jpg\"}]}";
+
+//            restsObj = new JSONObject(json);
+            restsObj = new JSONObject(data);
             restsArr = restsObj.getJSONArray("restaurants");
             for (int i = 0; i < restsArr.length(); i++) {
                 JSONObject obj = (JSONObject) restsArr.get(i);
 //                Log.d("zip is", obj.getString("postal_code"));
-                Restaurant r = new Restaurant((JSONObject) restsArr.get(i));
+                Restaurant r = new Restaurant(obj);
                 restaurants.add(r);
             }
         } catch (JSONException e) {

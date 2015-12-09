@@ -82,22 +82,22 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:text="@string/title_activity_maps"/>-->
 
-<<<<<<< HEAD
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/load"
-            android:text="Load Image" />
+<!--<<<<<<< HEAD-->
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:id="@+id/load"-->
+            <!--android:text="Load Image" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/img"/>
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:id="@+id/img"/>-->
 
-    </RelativeLayout>
-=======
->>>>>>> 68e1708917178445ab9da847925397212290e96a
+    <!--</RelativeLayout>-->
+<!--=======-->
+<!--&gt;>>>>>> 68e1708917178445ab9da847925397212290e96a-->
 
 <!--</LinearLayout>-->
