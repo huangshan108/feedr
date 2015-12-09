@@ -55,12 +55,13 @@ public class MapsActivity extends Activity implements
      */
     private GoogleMap mMap;
 
-    double TARGET_LAT = 37.865041;
-    double TARGET_LOG = -122.264094;
+    double TARGET_LAT;
+    double TARGET_LOG ;
 
-    double CURRENT_LAT = 37.8687;
-    double CURRENT_LOG = -122.259;
+    double CURRENT_LAT;
+    double CURRENT_LOG;
 
+    String encoding;
     GoogleApiClient googleApiClient;
 
     public void onCreate(Bundle savedState) {
@@ -77,9 +78,27 @@ public class MapsActivity extends Activity implements
         /**
          * Get current location
          */
-//        Intent creatorIntent = getIntent();
+        Intent creatorIntent = getIntent();
 //        CURRENT_LAT = Double.parseDouble(creatorIntent.getStringExtra("lat"));
 //        CURRENT_LOG = Double.parseDouble(creatorIntent.getStringExtra("lon"));
+
+        String data = creatorIntent.getStringExtra("data");
+        Log.e("data received", data);
+        String[] parsed = data.split("_splitmeherepleasenow_");// the encoding can actually be one of my other splitters so im using this as the splitting point
+        encoding = parsed[0];
+        String[] points = parsed[1].split("_");
+
+        CURRENT_LAT = new Double(points[0].split(":")[0]);
+        CURRENT_LOG = new Double(points[0].split(":")[1]);
+        TARGET_LAT = new Double(points[1].split(":")[0]);
+        TARGET_LOG = new Double(points[1].split(":")[1]);
+
+
+        Log.e("encoding", encoding);
+        Log.e("curr_lat", CURRENT_LAT + "");
+        Log.e("curr_log", CURRENT_LOG + "");
+        Log.e("tar_lat", TARGET_LAT + "");
+        Log.e("tar_log", TARGET_LOG + "");
 
         // Set the layout. It only contains a MapFragment and a DismissOverlay.
         setContentView(R.layout.activity_maps);
@@ -138,9 +157,9 @@ public class MapsActivity extends Activity implements
         setUpMap();
 
         // encodedString should be received here.
-        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
-        Log.i("LIST", encodedString);
-        List<LatLng> list = decodePoly(encodedString);
+//        String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
+//        Log.i("LIST", encodedString);
+        List<LatLng> list = decodePoly(encoding);
 
         PolylineOptions options = new PolylineOptions().width(12).color(Color.parseColor("#00B3Fd")).geodesic(true);
         for (int z = 0; z < list.size() - 1; z++) {

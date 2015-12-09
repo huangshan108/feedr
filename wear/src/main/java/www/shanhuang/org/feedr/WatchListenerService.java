@@ -78,9 +78,10 @@ public class WatchListenerService extends WearableListenerService {
 
         } else if (messageEvent.getPath().equalsIgnoreCase( MAP )){
             // TODO: do something with the message and start MapActivity
-            Intent MapIntent = new Intent(this, MapsActivity.class);
-            MapIntent.putExtra("map", new_data);
-            startActivity(MapIntent);
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+            mapIntent.putExtra("data", new_data);
+            mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mapIntent);
 
         } else if (messageEvent.getPath().equalsIgnoreCase(PREFERENCES)) {
             // TODO: update preferences

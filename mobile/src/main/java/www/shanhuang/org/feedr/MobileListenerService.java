@@ -61,14 +61,19 @@ public class MobileListenerService extends WearableListenerService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("start", "starting service");
-        String values = intent.getStringExtra("zip:latlong");
-        String[] parsed = values.split(":");
-        zip = parsed[0];
-        latLong = parsed[1] + ":" + parsed[2];
-//        Log.e("ls zip", zip);
-//        Log.e("ls latlong", latLong);
 
-        sendMessage(MEAL_PLAN,values + "||" + Opentable.getRestaurants(zip));
+        String command = intent.getStringExtra("command");
+        if (command.equalsIgnoreCase("start")){
+            String values = intent.getStringExtra("zip:latlong");
+            String[] parsed = values.split(":");
+            zip = parsed[0];
+            latLong = parsed[1] + ":" + parsed[2];
+            sendMessage(MEAL_PLAN,values + "||" + Opentable.getRestaurants(zip));
+        } else if (command.equalsIgnoreCase("map")) {
+            String encoding = intent.getStringExtra("encoding");
+            String location_data = intent.getStringExtra("location_data");
+            sendMessage(MAP, encoding+"_splitmeherepleasenow_"+location_data);
+        }
         return START_STICKY;
     }
 
@@ -84,7 +89,14 @@ public class MobileListenerService extends WearableListenerService {
         } else if (messageEvent.getPath().equalsIgnoreCase(PREFS_CHANGE)) {
             // TODO: received preferences change from watch, save preferences to persist
             savePreferences(messageEvent);
-        } else {
+        } else if (messageEvent.getPath().equalsIgnoreCase(MAP)) {
+
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+            mapIntent.putExtra("locations", new String(messageEvent.getData()));
+            mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mapIntent);
+        }
+        else {
             super.onMessageReceived( messageEvent );
         }
     }

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 zip = geocoder(lat, lon);
                 Intent mobileListenerIntent = new Intent(getBaseContext() , MobileListenerService.class);
                 mobileListenerIntent.putExtra("zip:latlong", zip+":"+latLong);
+                mobileListenerIntent.putExtra("command", "start");
                 startService(mobileListenerIntent);
             }
         }, WAIT_TIME);

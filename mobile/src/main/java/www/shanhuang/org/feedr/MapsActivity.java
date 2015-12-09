@@ -1,6 +1,7 @@
 package www.shanhuang.org.feedr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -41,17 +42,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Polyline line;
     Context context;
 
-    double TARGET_LAT = 37.865041;
-    double TARGET_LOG = -122.264094;
+    double TARGET_LAT ;
+    double TARGET_LOG ;
 
-    double CURRENT_LAT = 37.8687;
-    double CURRENT_LOG = -122.259;
+    double CURRENT_LAT ;
+    double CURRENT_LOG ;
+
+    String location_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        Intent creatorIntent = getIntent();
+        location_data = creatorIntent.getStringExtra("locations");
+        Log.e("data", location_data + " ");
+        // data is in the format currLat:currLong::restaurantLat:restaurantLong
+        String[] parsed = location_data.split("_");
+        Log.e("curr", parsed[0]);
+        Log.e("rest", parsed[1]);
+
+        String[] current = parsed[0].split(":");
+        String[] target = parsed[1].split(":");
+        CURRENT_LAT = new Double(current[0]);
+        CURRENT_LOG = new Double(current[1]);
+        TARGET_LAT = new Double(target[0]);
+        TARGET_LOG = new Double(target[1]);
+
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//         Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -216,7 +236,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            String encodedString = "eqbfF|ufiVsAeSeJdAwAPCc@E_@IGG?kAPCi@m@sIC]";
 
             // Send encodedString to wear in MapsActivity
-
+            Log.e("encoding", encodedString);
+            Intent mobileListenerService = new Intent(this, MobileListenerService.class);
+            mobileListenerService.putExtra("command", "map");
+            mobileListenerService.putExtra("encoding", encodedString);
+            mobileListenerService.putExtra("location_data", location_data);
+            startService(mobileListenerService);
 
 
         } catch (Exception e) {
