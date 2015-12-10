@@ -34,34 +34,34 @@ public class PreferenceActivity extends Activity {
 
     public void onPreferencesButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.dist_radioButton1:
-                if (checked) editor.putInt("distance", 1);
+                if (checked) editor.putInt("distance", 0).commit();
                 break;
             case R.id.dist_radioButton2:
-                if (checked) editor.putInt("distance", 2);
+                if (checked) editor.putInt("distance", 1).commit();
                 break;
             case R.id.dist_radioButton3:
-                if (checked) editor.putInt("distance", 3);
+                if (checked) editor.putInt("distance", 2).commit();
                 break;
             case R.id.dist_radioButton4:
-                if (checked) editor.putInt("distance", 4);
+                if (checked) editor.putInt("distance", 3).commit();
                 break;
             case R.id.cost_radioButton1:
-                if (checked) editor.putInt("cost", 1);
+                if (checked) editor.putInt("cost", 0).commit();
                 break;
             case R.id.cost_radioButton2:
-                if (checked) editor.putInt("cost", 2);
+                if (checked) editor.putInt("cost", 1).commit();
                 break;
             case R.id.cost_radioButton3:
-                if (checked) editor.putInt("cost", 3);
+                if (checked) editor.putInt("cost", 2).commit();
                 break;
             case R.id.cost_radioButton4:
-                if (checked) editor.putInt("cost", 4);
+                if (checked) editor.putInt("cost", 3).commit();
                 break;
         }
     }

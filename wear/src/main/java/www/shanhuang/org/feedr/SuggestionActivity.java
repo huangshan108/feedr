@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -57,14 +58,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SuggestionActivity extends Activity implements DataApi.DataListener {
-    String currImage;
     protected String zip, json;
     protected double currLat, currLon;
-    private ArrayList<Restaurant> restaurants, backup;
+    private ArrayList<Restaurant> restaurants;
     GoogleApiClient mApiClient;
     Bitmap image;
-    private WatchListenerService wls;
-    private int WAIT_TIME = 3 *1000;
+    private ImageListenerService imageService;
+    private int WAIT_TIME = 2 *1000;
     Restaurant targetRestaurant;
 
     @Override
@@ -87,13 +87,6 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
                 .build();
         mApiClient.connect();
 
-        /**
-         for actual project; uncomment later
-         data = creatorIntent.getStringExtra("data");
-         String[] parsed = data.split("|");
-         **/
-        // just for prog03:
-        currImage = creatorIntent.getStringExtra("image");
         ImageButton go = (ImageButton) findViewById(R.id.suggestion_1_button);
         ImageButton map = (ImageButton) findViewById(R.id.suggestion_2_button);
 
@@ -107,15 +100,10 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Getting next suggestion", "gott");
+                Log.d("Getting next suggestion", "got");
                 nextSuggestion(view);
             }
         });
-
-
-
-    //final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
-    //pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
 
         String data = creatorIntent.getStringExtra("data");
         Log.i("data", data);
@@ -130,26 +118,32 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         Log.e("json", json);
         getRestaurantList();
 
-//        Log.e("rest coord", restaurants.size() + "");
-//        Iterator<Restaurant> it = restaurants.iterator();
-//        while (it.hasNext()){
-//            Restaurant r = it.next();
-//            getDistance(r);
-//        }
-
-        // ---------------------
         fill();
     }
 
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent imageIntent = new Intent(this, ImageListenerService.class);
+        bindService(imageIntent, mConnection,
+                Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(mConnection);
+    }
+
+
     public void nextSuggestion(View view) {
         // get next information from mobile, then use that to build the next suggestion
-
-        // TODO: get info from mobile then add to intent and start new activity
         targetRestaurant = getNextRestaurant();
 
 
+        getImage(targetRestaurant);
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
 //        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
@@ -158,27 +152,22 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         switch (rating) {
 
             case "1":
-//                    ratings.setBackgroundResource(R.mipmap.star_1);
                 stars = "*";
                 break;
             case "1.5":
             case "2":
-//                    ratings.setBackgroundResource(R.mipmap.star_2);
                 stars = "**";
                 break;
             case "2.5":
             case "3":
-//                    ratings.setBackgroundResource(R.mipmap.star_3);
                 stars = "***";
                 break;
             case "3.5":
             case "4":
-//                    ratings.setBackgroundResource(R.mipmap.star_4);
                 stars = "****";
                 break;
             case "4.5":
             default:
-//                    ratings.setBackgroundResource(R.mipmap.star_5);
                 stars = "*****";
                 break;
         }
@@ -194,32 +183,29 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 
     // returns the next restaurant based on the preferences
     protected Restaurant getNextRestaurant() {
-        // get preferences
+        // get next restaurant that meets the preference. if none met, then return whatever is available.
+        SharedPreferences sharedPref = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
 
-        int cost_position = 4; // change to value loaded
-        double distance_position = 5; // change to value loaded
+        double[] dist_array = {0.2, 0.5, 1, 2};
 
+        int cost_filter = sharedPref.getInt("cost", 3);
+        int dist_filter = sharedPref.getInt("distance", 3);
 
-//        for (Restaurant restaurant : restaurants) {
-//            double distance = getDistance(restaurant);
-//            int cost = new Integer(restaurant.getPrice());
-//            if (cost <= cost_position && distance <= distance_position ) {
-//                Log.e("filter", "in here");
-//                restaurants.remove(restaurant);
-//                return restaurant;
-//            } else {
-//                Log.e("filter", "not filtering correctly");
-//            }
-//        }
+        Log.e("cost", "<" + cost_filter);
+        Log.e("dist", "<" + dist_array[dist_filter]);
+        for (Restaurant restaurant : restaurants) {
+            double distance = getDistance(restaurant);
+            int cost = new Integer(restaurant.getPrice());
+            index = (index+1)%restaurants.size();
+            if (cost <= cost_filter && distance <= dist_array[dist_filter] ) {
+                return restaurant;
+            }
+        }
+
         Restaurant out = restaurants.get(index);
-        index = (index+1)%3;
+        index = (index+1)%restaurants.size();
 
         return out;
-        // if we get here, we reuse the restaurant list
-//        restaurants = backup;
-//        Collections.shuffle(backup);
-//        getNextRestaurant();
-//        return null;
     }
 
     protected void getRestaurantList() {
@@ -227,22 +213,18 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         JSONArray restsArr = new JSONArray();
         restaurants = new ArrayList<Restaurant>();
         try {
-//            String data = "{\"total_entries\":3,\"per_page\":100,\"current_page\":1,\"restaurants\":[{\"id\":84985,\"name\":\"Tako Sushi\",\"address\":\"2379 Telegraph Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5106658000\",\"lat\":37.867274,\"lng\":-122.258646,\"price\":2,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://s3-media3.fl.yelpcdn.com/bphoto/c2w2geSA0XBbE5MPsXT3fg/348s.jpg\"}, {\"id\":84986,\"name\":\"Cheese Board Pizza\",\"address\":\"1512 Shattuck Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94709\",\"country\":\"US\",\"phone\":\"5105493183\",\"lat\":37.879853,\"lng\":-122.269516,\"price\":3,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://www.berkeleyside.com/wp-content/uploads/2011/06/Pizza-from-Cheese-Board.jpg\"}, {\"id\":84987,\"name\":\"Gypsy's\",\"address\":\"2519 Durant Avenue\",\"city\":\"Berkeley\",\"state\":\"CA\",\"area\":\"San Francisco Bay Area\",\"postal_code\":\"94704\",\"country\":\"US\",\"phone\":\"5105484860\",\"lat\":37.868098,\"lng\":-122.258136,\"price\":2,\"reserve_url\":\"http://www.opentable.com/single.aspx?rid=84985\",\"mobile_reserve_url\":\"http://mobile.opentable.com/opentable/?restId=84985\",\"image_url\":\"http://image.zmenu.com/large/14460/20131206063723739974.jpg\"}]}";
-
-//            restsObj = new JSONObject(json);
             restsObj = new JSONObject(json);
             restsArr = restsObj.getJSONArray("restaurants");
             for (int i = 0; i < restsArr.length(); i++) {
                 JSONObject obj = (JSONObject) restsArr.get(i);
-//                Log.d("zip is", obj.getString("postal_code"));
                 Restaurant r = new Restaurant(obj);
                 restaurants.add(r);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        backup = restaurants;
-//        Collections.shuffle(restaurants);
+        Log.e("size", restaurants.size()+ "");
+        Collections.shuffle(restaurants);
 
     }
 
@@ -261,12 +243,6 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         /** Use the location information to get current location, and restaurant location
          *  and set those tto the GoogleMaps API to get directions to the restaurant
          **/
-        // TODO: tell WatchListenerService to tell Mobile to get map info and then call MapActivity
-//        Intent mapIntent = new Intent(this, MapsActivity.class);
-//        mapIntent.putExtra("lat", currLat);
-//        mapIntent.putExtra("lon", currLon);
-//        startActivity(mapIntent);
-
         // connect the ApiClient, and send message
         GoogleApiClient mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -288,8 +264,6 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
     }
 
     public double getDistance(Restaurant targetRestaurant) {
-//        Log.e("location", "current location: "+ currLat + ":" + currLon);
-//        Log.e("location", "target location: "+ targetRestaurant.getLat() + ":" + targetRestaurant.getLng());
 
         double output = 0;
         Location start = new Location("start");
@@ -299,12 +273,13 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         destination.setLatitude(new Double(targetRestaurant.getLat()));
         destination.setLongitude(new Double(targetRestaurant.getLng()));
         output = start.distanceTo(destination);
-//        Log.e("distance", output + "m");
         return output;
 
     }
 
     protected void getImage(Restaurant targetRestaurant) {
+
+        // image unable to retrieve; data transfer issue
 
 //        WatchMessenger.sendMessage(mApiClient, "/image", targetRestaurant.getImageUrl());
 //        final Handler handler = new Handler();
@@ -313,16 +288,11 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
 //            public void run() {
 //                // run after waiting  WAIT_TIME ms
 //                try {
-//                    FileInputStream in = new FileInputStream("image.txt");
-//                    StringBuilder s = new StringBuilder();
-//                    int c;
-//                    while ((c = in.read()) != -1) {
-//                        s += c + "";
-//                    }
-//                    String bitmap_string = wls.getBitmap();
+//                    String bitmap_string = imageService.getBitmap();
 //                    image = BitmapFactory.decodeFile(bitmap_string);
-//                    ImageView img = (ImageView) findViewById(R.id.img);
+//                    ImageView img = (ImageView) findViewById(R.id.restaurant_image);
 //                    img.setImageBitmap(image);
+////                    image = new BitmapFactory().decodeFile(imageService.getBitmap());
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
@@ -379,7 +349,7 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
     private void fill() {
         targetRestaurant = getNextRestaurant();
 
-
+        getImage(targetRestaurant);
         TextView information = (TextView) findViewById(R.id.restaurant_info);
         ImageView image = (ImageView) findViewById(R.id.restaurant_image);
 //        ImageView ratings = (ImageView) findViewById(R.id.restaurant_rating);
@@ -387,27 +357,22 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         String stars = "*";
         switch (rating) {
             case "1":
-//                    ratings.setBackgroundResource(R.mipmap.star_1);
                 stars = "*";
                 break;
             case "1.5":
             case "2":
-//                    ratings.setBackgroundResource(R.mipmap.star_2);
                 stars = "**";
                 break;
             case "2.5":
             case "3":
-//                    ratings.setBackgroundResource(R.mipmap.star_3);
                 stars = "***";
                 break;
             case "3.5":
             case "4":
-//                    ratings.setBackgroundResource(R.mipmap.star_4);
                 stars = "****";
                 break;
             case "4.5":
             default:
-//                    ratings.setBackgroundResource(R.mipmap.star_5);
                 stars = "*****";
                 break;
         }
@@ -419,5 +384,19 @@ public class SuggestionActivity extends Activity implements DataApi.DataListener
         information.setText(" " + targetRestaurant.getName() + " \n Price: " + targetRestaurant.getPrice() + " \n Distance: " + df.format(dist) + "mi \n Ratings: " + stars );
     }
 
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className,
+                                       IBinder binder) {
+            Log.e("conn", "conn");
+            ImageListenerService.MyBinder b = (ImageListenerService.MyBinder) binder;
+            imageService = b.getService();
+            Log.e("oSC", "im bound");
+        }
+
+        public void onServiceDisconnected(ComponentName className) { imageService = null;
+        }
+    };
 }
 

@@ -100,19 +100,6 @@ public class WatchListenerService extends WearableListenerService {
             preferencesIntent.putExtra("prefs", new_data);
             startActivity(preferencesIntent);
 
-        } else if (messageEvent.getPath().equalsIgnoreCase(IMAGE)) {
-            Log.e("wls", "its here instead");
-            Log.e("the data", new_data);
-            bitmap_string = new_data;
-
-            FileOutputStream out;
-            try {
-                out = new FileOutputStream("image.txt");
-                out.write(bitmap_string.getBytes());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
         } else {
             super.onMessageReceived(messageEvent);
         }
