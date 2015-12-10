@@ -205,7 +205,7 @@ public class MapsActivity extends Activity implements
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng((CURRENT_LAT + TARGET_LAT) / 2, (CURRENT_LOG + TARGET_LOG) / 2));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
         mMap.moveCamera(center);
         mMap.animateCamera(zoom);
         Log.i("setUpMap", "FLAG");
